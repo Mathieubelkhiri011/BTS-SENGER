@@ -3,7 +3,7 @@
     <div class="filter">
       <div class="ui fluid search">
         <div class="ui icon input">
-          <input
+          <input v-model="search"
             class="prompt"
             type="text"
             placeholder="Rechercher un utilisateur"
@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="users">
-      <div class="user" v-for="user in users" :key="user.username">
+      <div class="user" @click="ToggleSelectedUser(user.username)" v-for="user in FilterUsers" :key="user.username">
         <img v-bind:src=user.picture_url />
         <!-- <span class="available">  -->
           <span>
@@ -39,10 +39,18 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   name: "Community",
   data() {
-    return { };
+    return { 
+      search : "",
+      selectedUsers: []
+    };
   },
   methods: {
     ...mapActions(["createOneToOneConversation"]),
+    
+    ToggleSelectedUser(username) {
+      this.selectedUsers.push({ username: username });
+      console.log(this.selectedUsers)
+    },  
     openConversation() {
       let promise = this.createOneToOneConversation("Alice");
 
@@ -52,7 +60,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["users"])
+    ...mapGetters(["users"]),
+    FilterUsers() {
+      return this.users.filter((user) => user.username.toLowerCase().includes(this.search.toLowerCase()))
+      //Pour la sélection, utiliser ArrayMap pour remplir le tableau selectedUser 
+    },
   }
 };
 </script>
