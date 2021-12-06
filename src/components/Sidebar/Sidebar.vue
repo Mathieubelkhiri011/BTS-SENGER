@@ -65,7 +65,7 @@
         </a>
         <div class="content">
           <span>
-         <div class="title"><i class="ui small icon circle"></i> {{ laconversation.participants }} </div>
+         <div class="title"><i class="ui small icon circle"></i> <span v-for="participant in laconversation.participants" :key="participant">{{ participant +" " }}</span> </div>
          </span>
         </div>
       </div>
@@ -135,6 +135,7 @@ export default {
   },
   computed: {
     ...mapGetters(["user", "conversations"])
+    
   }
 };
 </script>
