@@ -46,24 +46,15 @@ export default {
   },
   methods: {
     ...mapActions(["createOneToOneConversation"]),
-    print(value){
-      console.log(value);
-    },
     ToggleSelectedUser(username) {
       if(this.selectedUsers.find(element => element.username === username)){
-        this.selectedUsers = this.selectedUsers.filter((user) => user.username === username);
+        this.selectedUsers = this.selectedUsers.filter((user) => user.username !== username);
       }else{
         this.selectedUsers.push({ username: username });
       }
-      //let user = this.users.find(element => element.username === username);
-      let indexOfObject = this.users.findIndex(
-            o => o.username === username
-       );
-      this.users[indexOfObject].isSelected = !this.users[indexOfObject].isSelected;
-      console.log(this.users);
     },  
     openConversation() {
-      let promise = this.createOneToOneConversation("Alice");
+      let promise = this.createOneToOneConversation(this.selectedUsers[0].username);
 
       promise.finally(() => {
         console.log("Conversation ouverte !");

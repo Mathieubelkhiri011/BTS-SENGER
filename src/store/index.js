@@ -42,7 +42,7 @@ export default new Vuex.Store({
       });
     },
     conversation(state, getters) {
-      //TODO
+      return state.conversations.filter(item => item.id === state.currentConversationId);
     }
   },
   mutations: {
@@ -59,6 +59,9 @@ export default new Vuex.Store({
     },
     setUsers(state, users) {
       state.users = users;
+    },
+    setConversations(state, conversations) {
+      state.conversations = conversations;
     },
 
     upsertUser(state, { user }) {
@@ -109,7 +112,7 @@ export default new Vuex.Store({
 
     initializeAfterAuthentication({ dispatch }) {
       dispatch("fetchUsers");
-      //TODO: dispatch("fetchConversations");
+      dispatch("fetchConversations");
     },
 
     fetchUsers({ commit }) {
@@ -118,15 +121,21 @@ export default new Vuex.Store({
       });
     },
 
+    fetchConversations({ commit }) {
+      Vue.prototype.$client.getConversations().then(({ conversations }) => {
+        commit("setConversations", conversations);
+      });
+    },
+    
     createOneToOneConversation({ commit }, username) {
       const promise = Vue.prototype.$client.getOrCreateOneToOneConversation(
         username
       );
 
       promise.then(({ conversation }) => {
-        // commit("upsertConversation", {
-        //   conversation
-        // });
+         commit("upsertConversation", {
+           conversation
+         });
 
         router.push({
           name: "Conversation",

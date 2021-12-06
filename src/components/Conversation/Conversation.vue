@@ -12,7 +12,7 @@
       <div class="title">
         <div class="ui compact">
           <i class="icon circle"></i>
-          <span>Groupe: Alice, Bob</span>
+          <span v-for="participant in conversation[0].participants" :key="participant">{{ participant + " " }}</span>
           <div class="ui simple dropdown item">
             <i class="vertical ellipsis icon"></i>
 
@@ -333,7 +333,7 @@
         <div class="conversation-footer">
           <div class="wrapper">
             <p>
-              <i title="Abandonner" class="circular times small icon link"></i>
+              <i title="Abandonner" class="circular times small icon link" @click="print()"></i>
               Répondre à Alice :
               <span>
                 On peut même éditer ou supprimer des messages !
@@ -342,7 +342,7 @@
 
             <div class="ui fluid search">
               <div class="ui icon input">
-                <input
+                <input 
                   class="prompt"
                   type="text"
                   placeholder="Rédiger un message"
@@ -379,10 +379,13 @@ export default {
     this.scrollBottom();
   },
   computed: {
-    ...mapGetters(["conversation"])
+    ...mapGetters(["users", "conversation"]),
   },
   methods: {
     ...mapActions([]),
+    print(){
+      console.log(this.conversation[0].participants);
+    },
     scrollBottom() {
       setTimeout(() => {
         let scrollElement = document.querySelector("#scroll");
