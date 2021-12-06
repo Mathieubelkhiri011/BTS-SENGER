@@ -35,7 +35,15 @@
         <span>Messages</span>
       </div>
     </div>
+
+
+
+
     <div class="conversations">
+      <div class="conversation">
+
+
+      </div>
       <div class="conversation-search">
         <div class="ui fluid search">
           <div class="ui icon input">
@@ -48,36 +56,24 @@
           </div>
         </div>
       </div>
-      <div class="conversation new" title="Bob" @click="openConversation(0)">
+
+
+
+      <div class="conversation new" v-for="laconversation in conversations" :key="laconversation.id" @click="openConversation(laconversation.id)" >
         <a class="avatar">
-          <img src="https://source.unsplash.com/7omHUGhhmZ0/100x100" />
+          <img src="https://clic-igeac.org/wp-content/uploads/2021/03/group-1824145_1280.png" />
         </a>
         <div class="content">
-          <div class="metadata">
-            <div class="title"><i class="ui small icon circle"> </i> Bob</div>
-            <span class="time">01:30:58</span>
-          </div>
-          <div class="text">C'est vraiment super Alice !</div>
-        </div>
-      </div>
-      <div
-        class="conversation"
-        title="Groupe: Gael, Bob"
-        @click="openConversation(0)"
-      >
-        <a class="avatar">
           <span>
-            <i class="users icon"> </i>
-          </span>
-        </a>
-        <div class="content">
-          <div class="metadata">
-            <div class="title">Groupe: Gael, Bob</div>
-            <span class="time">01:36:38</span>
-          </div>
-          <div class="text">Incroyable !</div>
+         <div class="title"><i class="ui small icon circle"></i> {{ laconversation.participants }} </div>
+         </span>
         </div>
       </div>
+
+
+
+
+    
       <div
         class="conversation available"
         title="Cha"
