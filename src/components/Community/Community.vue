@@ -25,9 +25,14 @@
     <div class="actions">
       <button class="ui primary big button" @click="openConversation">
         <i class="conversation icon"></i>
-        <span>
-          Ouvrir la conversation (2)
+        <span v-if="libBtnConversation === ''">
+           {{"Ouvrir la conversation ("+this.selectedUsers.length+")"}}
+         
         </span>
+        <span v-else>
+          {{libBtnConversation}}
+        </span>
+        
       </button>
     </div>
   </div>
@@ -41,6 +46,7 @@ export default {
   data() {
     return { 
       search : "",
+      libBtnConversation: "",
       selectedUsers: []
     };
   },
@@ -54,6 +60,7 @@ export default {
       }
     },  
     openConversation() {
+      this.libBtnConversation = "Ouverture de la conversation en cours ("+this.selectedUsers.length+")";
       let promise;
       if(this.selectedUsers.length > 1) {
         promise = this.createManyToManyConversation(this.selectedUsers.map(user => (
@@ -78,7 +85,7 @@ export default {
       }));
       return  FilterUsers.filter((user) => user.username.toLowerCase().includes(this.search.toLowerCase()))
     },
-  }
+  },
 };
 </script>
 
