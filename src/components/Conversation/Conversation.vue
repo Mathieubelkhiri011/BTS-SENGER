@@ -1,18 +1,19 @@
 <template>
   <div class="conversation">
     <div class="conversation-header">
-      <!--      <img-->
-      <!--        class="avatar"-->
-      <!--        src="https://source.unsplash.com/FUcupae92P4/100x100"-->
-      <!--      />-->
-      <div class="avatar">
+           <img v-if="this.conversation[0].type === 'one_to_one'"
+      class="avatar"
+      :src="this.users.find(e => e.username === this.conversation[0].participants[1]).picture_url"
+           />
+      <div v-else class="avatar">
         <i class="ui users icon"></i>
       </div>
 
       <div class="title">
         <div class="ui compact">
           <i class="icon circle"></i>
-          <span v-for="participant in conversation[0].participants" :key="participant">{{ participant + " " }}</span>
+          <span v-for="(participant) in conversation[0].participants.slice(0,3)" :key="participant">{{ (usernameUserConnecte === participant) ? "" : participant + " "}}</span>
+          <span v-if="conversation[0].participants.length >3">, ...</span>
           <div class="ui simple dropdown item">
             <i class="vertical ellipsis icon"></i>
 
@@ -369,7 +370,8 @@ export default {
   components: { Group },
   data() {
     return {
-      groupPanel: false
+      groupPanel: false,
+      usernameUserConnecte: localStorage.getItem("username"),
     };
   },
   mounted() {
@@ -379,12 +381,13 @@ export default {
     this.scrollBottom();
   },
   computed: {
-    ...mapGetters(["users", "conversation"]),
+    ...mapGetters(["users", "conversation", "authenticating"]),
   },
   methods: {
     ...mapActions([]),
     print(){
-      console.log(this.conversation);
+      console.log("authenticating: ", localStorage.getItem("username"));
+      console.log(this.users.find(e => e.username === this.conversation[0].participants[1]).picture_url);
     },
     scrollBottom() {
       setTimeout(() => {
