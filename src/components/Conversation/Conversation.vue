@@ -384,7 +384,7 @@ export default {
   methods: {
     ...mapActions([]),
     print(){
-      console.log(this.conversation[0].participants);
+      console.log(this.conversation);
     },
     scrollBottom() {
       setTimeout(() => {

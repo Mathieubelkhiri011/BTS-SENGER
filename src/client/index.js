@@ -29,6 +29,7 @@ export default function install(Vue, store) {
 
   client.on("conversationCreated", async ({ conversation }) => {
     store.commit("upsertConversation", { conversation });
+    console.log("conversationCreated",conversation );
   });
 
   client.on("participantAdded", async ({ conversation }) => {

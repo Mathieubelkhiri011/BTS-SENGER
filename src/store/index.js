@@ -41,7 +41,11 @@ export default new Vuex.Store({
         };
       });
     },
+    
     conversation(state, getters) {
+      console.log("item.id : ", state.conversations);
+      console.log("state.currentConversationId : ", state.currentConversationId);
+      console.log("TEST /",state.conversations.filter(item => item.id === state.currentConversationId));
       return state.conversations.filter(item => item.id === state.currentConversationId);
     }
   },
@@ -79,7 +83,17 @@ export default new Vuex.Store({
     },
 
     upsertConversation(state, { conversation }) {
-      //TODO
+      const localConversationIndex = state.conversations.findIndex(
+        _conversation => _conversation.id === conversation.id
+      );
+
+      if (localConversationIndex !== -1) {
+        Vue.set(state.conversations, localConversationIndex, conversation);
+      } else {
+        state.conversations.push({
+          ...conversation
+        });
+      }
     }
   },
   actions: {
@@ -136,6 +150,26 @@ export default new Vuex.Store({
          commit("upsertConversation", {
            conversation
          });
+
+        router.push({
+          name: "Conversation",
+          params: { id: conversation.id }
+        });
+      });
+
+      return promise;
+    },
+
+    createManyToManyConversation({ commit }, usernames ) {
+      const promise = Vue.prototype.$client.createManyToManyConversation(
+        usernames
+      );
+      console.log("usernames : " , usernames);
+
+      promise.then(({ conversation }) => {
+      //   commit("upsertConversation", {
+          // conversation
+         //});
 
         router.push({
           name: "Conversation",

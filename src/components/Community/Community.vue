@@ -45,7 +45,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["createOneToOneConversation"]),
+    ...mapActions(["createOneToOneConversation", "createManyToManyConversation"]),
     ToggleSelectedUser(username) {
       if(this.selectedUsers.find(element => element.username === username)){
         this.selectedUsers = this.selectedUsers.filter((user) => user.username !== username);
@@ -54,8 +54,15 @@ export default {
       }
     },  
     openConversation() {
-      let promise = this.createOneToOneConversation(this.selectedUsers[0].username);
-
+      let promise;
+      if(this.selectedUsers.length > 1) {
+        promise = this.createManyToManyConversation(this.selectedUsers.map(user => (
+         user.username
+      )));
+      } else {
+        promise = this.createOneToOneConversation(this.selectedUsers[0].username);
+      }
+      console.log(promise);
       promise.finally(() => {
         console.log("Conversation ouverte !");
       });
