@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="users">
-      <div class="user" @click="ToggleSelectedUser(user.username)" v-for="user in FilterUsers" :key="user.username">
+      <div :class="{ 'selected user' : user.isSelected}" class="user" v-for="user in FilterUsers" :key="user.username" @click="ToggleSelectedUser(user.username)">
         <img v-bind:src=user.picture_url />
         <!-- <span class="available">  -->
           <span>
@@ -46,10 +46,21 @@ export default {
   },
   methods: {
     ...mapActions(["createOneToOneConversation"]),
-    
+    print(value){
+      console.log(value);
+    },
     ToggleSelectedUser(username) {
-      this.selectedUsers.push({ username: username });
-      console.log(this.selectedUsers)
+      if(this.selectedUsers.find(element => element.username === username)){
+        this.selectedUsers = this.selectedUsers.filter((user) => user.username === username);
+      }else{
+        this.selectedUsers.push({ username: username });
+      }
+      //let user = this.users.find(element => element.username === username);
+      let indexOfObject = this.users.findIndex(
+            o => o.username === username
+       );
+      this.users[indexOfObject].isSelected = !this.users[indexOfObject].isSelected;
+      console.log(this.users);
     },  
     openConversation() {
       let promise = this.createOneToOneConversation("Alice");
@@ -62,8 +73,12 @@ export default {
   computed: {
     ...mapGetters(["users"]),
     FilterUsers() {
-      return this.users.filter((user) => user.username.toLowerCase().includes(this.search.toLowerCase()))
-      //Pour la sélection, utiliser ArrayMap pour remplir le tableau selectedUser 
+      let FilterUsers =[];
+      FilterUsers = this.users.map(user => ({
+        ...user,
+        isSelected : this.selectedUsers.find(element => element.username === user.username)
+      }));
+      return  FilterUsers.filter((user) => user.username.toLowerCase().includes(this.search.toLowerCase()))
     },
   }
 };
