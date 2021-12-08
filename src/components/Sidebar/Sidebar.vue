@@ -34,6 +34,11 @@
         <br />
         <span>Messages</span>
       </div>
+      <div v-if="true" class="blue button" @click="openGroupeProjet">
+        <i class="search icon"> </i>
+        <br />
+        <span>GroupeDev</span>
+      </div>
     </div>
     <div class="conversations">
       <div class="conversation-search">
@@ -135,6 +140,9 @@ export default {
     },
     openConversation(id) {
       router.push({ name: "Conversation", params: { id } });
+    },
+    openGroupeProjet(){
+      router.push({ name: "openGroupeProjet" });
     }
   },
   computed: {
