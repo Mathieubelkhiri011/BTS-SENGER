@@ -16,9 +16,9 @@
     </div>
     <div class="user" v-for="user in UsersConversations" :key="user.username">
       <img v-bind:src=user.picture_url />
-      <span> {{ user.username }} <br /><i class="nickname"></i></span>
+      <span> {{ user.username }} <br /><i class="nickname">{{ user.username }}</i></span>
       <i title="Modifier le surnom" class="circular quote left link icon"></i>
-      <i title="Enlever de la conversation" class="circular times icon link" style=""></i>
+      <i title="Enlever de la conversation" @click="RemoveUser(user.username)" class="circular times icon link" style=""></i>
     </div>
     <div class="spanner">
       <hr />
@@ -28,7 +28,7 @@
     <div class="user" v-for="user in FilterUsers" :key="user.token">
       <img v-bind:src=user.picture_url />
       <span> {{ user.username }} </span>
-      <i title="Ajouter à la conversation" @click="print()" class="circular plus icon link"></i>
+      <i title="Ajouter à la conversation" @click="addUser(user.username)" class="circular plus icon link"></i>
     </div>
   </div>
 </template>
@@ -42,7 +42,8 @@ export default {
   data() {
     return {
       search: "",
-      UsersConversations : []
+      UsersConversations : [],
+      usernameUserConnecte: localStorage.getItem("username"),
     };
   },
   computed: {
@@ -53,6 +54,7 @@ export default {
       FilterUsers = this.users.map(user => ({
         ...user
       }));
+      FilterUsers = this.users.filter((user) => !this.conversation[0].participants.find(element => element === user.username));
       return  FilterUsers.filter((user) => user.username.toLowerCase().includes(this.search.toLowerCase()))
     },
   },
@@ -63,21 +65,37 @@ export default {
       this.UsersConversations = this.users.map(user => ({
         ...user
       }));
-      console.log(this.UsersConversations);
       return this.UsersConversations.filter((user) => this.conversation[0].participants.find(element => element === user.username));
     },
 
+    addUser(username){
+      this.conversation[0].participants.push(username);
+      console.log(this.conversation[0].participants , " : ", username);
+      this.UsersConversations = this.users.filter((user) => this.conversation[0].participants.find(element => element === user.username));
+      this.UsersConversations = this.UsersConversations.filter((user1) => !this.UsersConversations.find(element => user1.username === this.usernameUserConnecte));
+   },
+
+    RemoveUser(username){
+      let i = 0;
+      
+      for (const key of this.conversation[0].participants) {
+        if(key === username) {
+          this.conversation[0].participants.splice(i, 1);
+        }
+        i = i + 1;
+      }
+
+      this.UsersConversations = this.users.filter((user) => this.conversation[0].participants.find(element => element === user.username));
+      this.UsersConversations = this.UsersConversations.filter((user1) => !this.UsersConversations.find(element => user1.username === this.usernameUserConnecte));    },
 
     print(){
-      this.UsersConversations = this.users.map(user => ({
-        ...user
-      }));
-      this.UserConversation = this.UsersConversations.filter((user) => this.conversation[0].participants.find(element => element === user.username));
-      console.log("tessssst", this.UserConversation[1].username);
+      this.UsersConversations = this.users.filter((user) => this.conversation[0].participants.find(element => element === user.username));
+      this.UsersConversations = this.UsersConversations.filter((user1) => !this.UsersConversations.find(element => user1.username === this.usernameUserConnecte));
     }
   },
   mounted(){
       this.UsersConversations = this.users.filter((user) => this.conversation[0].participants.find(element => element === user.username));
+      this.UsersConversations = this.UsersConversations.filter((user1) => !this.UsersConversations.find(element => user1.username === this.usernameUserConnecte));
   }
 };
 </script>
