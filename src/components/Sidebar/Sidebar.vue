@@ -29,7 +29,7 @@
         <br />
         <span>Communauté</span>
       </div>
-      <div v-if="true" class="blue button" @click="openMessageSearch">
+      <div v-if="true" class="blue button" @click="print()">
         <i class="search icon"> </i>
         <br />
         <span>Messages</span>
@@ -48,6 +48,7 @@
         <div class="ui fluid search">
           <div class="ui icon input">
             <input
+            v-model="search"
               class="prompt"
               placeholder="Rechercher une conversation"
               type="text"
@@ -59,13 +60,13 @@
 
 
 
-      <div class="conversation new" v-for="laconversation in conversations" :key="laconversation.id" @click="openConversation(laconversation.id)" >
+      <div class="conversation" v-for="laconversation in FilterConversations" :key="laconversation.id" @click="openConversation(laconversation.id)" >
         <a class="avatar">
           <img src="https://clic-igeac.org/wp-content/uploads/2021/03/group-1824145_1280.png" />
         </a>
         <div class="content">
           <span>
-         <div class="title"><i class="ui small icon circle"></i> <span v-for="participant in laconversation.participants" :key="participant">{{ participant +" " }}</span> </div>
+         <div class="title"><i class="ui small icon circle" ></i> {{ laconversation.title }} </div>
          </span>
         </div>
       </div>
@@ -118,7 +119,8 @@ export default {
   name: "Sidebar",
   data() {
     return {
-      search: ""
+      search: "",
+      isActive: false
     };
   },
   methods: {
@@ -131,12 +133,32 @@ export default {
     },
     openConversation(id) {
       router.push({ name: "Conversation", params: { id } });
+    },
+     print(){
+  
+      console.log("tessssst", this.conversations);
+    },
+    activeclass(){
+      this.isActive = !this.isActive;
+
     }
+
   },
   computed: {
-    ...mapGetters(["user", "conversations"])
-    
+    ...mapGetters(["user", "conversations"]),
+  
+    FilterConversations() {
+      let FilterConversations =[];
+      FilterConversations = this.conversations.map(conversation => ({
+        ...conversation,
+      }));
+      return  FilterConversations.filter((conversation) => conversation.title.toLowerCase().includes(this.search.toLowerCase()))
+    },
+
+
   }
+
+  
 };
 </script>
 

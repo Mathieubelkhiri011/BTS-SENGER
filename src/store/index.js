@@ -36,8 +36,8 @@ export default new Vuex.Store({
     conversations(state) {
       return state.conversations.map(conversation => {
         return {
-          ...conversation
-          //TODO
+          ...conversation,
+          title: conversation.participants.toString()
         };
       });
     },
