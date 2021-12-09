@@ -1,6 +1,6 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import router from "@/router";
+import Vue from 'vue';
+import Vuex from 'vuex';
+import router from '@/router';
 
 Vue.use(Vuex);
 
@@ -35,18 +35,21 @@ export default new Vuex.Store({
     },
     conversations(state) {
       return state.conversations.map(conversation => {
+        let participantToTitle = conversation.participants;
+        const indexOfConnectedUser = conversation.participants.indexOf(localStorage.getItem('username'));
+        if (indexOfConnectedUser > -1) {
+          participantToTitle.splice(indexOfConnectedUser, 1);
+        }
         return {
-          ...conversation
+          ...conversation,
+          title: participantToTitle.join(', ')
           //TODO
         };
       });
     },
-    
+
     conversation(state, getters) {
-      console.log("item.id : ", state.conversations);
-      console.log("state.currentConversationId : ", state.currentConversationId);
-      console.log("TEST /",state.conversations.filter(item => item.id === state.currentConversationId));
-      return state.conversations.filter(item => item.id === state.currentConversationId);
+      return getters.conversations.filter(item => item.id === state.currentConversationId)[0];
     }
   },
   mutations: {
@@ -57,21 +60,24 @@ export default new Vuex.Store({
       state.authenticating = authenticating;
     },
     setUser(state, { username, token, picture_url }) {
-      Vue.set(state.user, "username", username);
-      Vue.set(state.user, "token", token);
-      Vue.set(state.user, "picture_url", picture_url);
+      Vue.set(state.user, 'username', username);
+      Vue.set(state.user, 'token', token);
+      Vue.set(state.user, 'picture_url', picture_url);
     },
     setUsers(state, users) {
       state.users = users;
     },
     setConversations(state, conversations) {
-      state.conversations = conversations;
+      state.conversations = conversations.map(conversation => {
+        return {
+          ...conversation
+          //TODO
+        };
+      });
     },
 
     upsertUser(state, { user }) {
-      const localUserIndex = state.users.findIndex(
-        _user => _user.username === user.username
-      );
+      const localUserIndex = state.users.findIndex(_user => _user.username === user.username);
 
       if (localUserIndex !== -1) {
         Vue.set(state.users, localUserIndex, user);
@@ -91,7 +97,8 @@ export default new Vuex.Store({
         Vue.set(state.conversations, localConversationIndex, conversation);
       } else {
         state.conversations.push({
-          ...conversation
+          ...conversation,
+          titre: 'toto'
         });
       }
     }
@@ -101,58 +108,56 @@ export default new Vuex.Store({
       if (!username || !password) {
         return;
       }
-      commit("setAuthenticating", true);
+      commit('setAuthenticating', true);
       Vue.prototype.$client
         .authenticate(username, password)
         .then(user => {
-          commit("setUser", user);
-          localStorage.setItem("username", username);
-          localStorage.setItem("password", password);
+          commit('setUser', user);
+          localStorage.setItem('username', username);
+          localStorage.setItem('password', password);
 
-          dispatch("initializeAfterAuthentication");
+          dispatch('initializeAfterAuthentication');
         })
         .catch(() => {
           alert("Erreur d'authentification !");
         })
         .finally(() => {
-          commit("setAuthenticating", false);
+          commit('setAuthenticating', false);
         });
     },
 
     deauthenticate() {
-      localStorage.removeItem("password");
+      localStorage.removeItem('password');
       window.location.reload();
     },
 
     initializeAfterAuthentication({ dispatch }) {
-      dispatch("fetchUsers");
-      dispatch("fetchConversations");
+      dispatch('fetchUsers');
+      dispatch('fetchConversations');
     },
 
     fetchUsers({ commit }) {
       Vue.prototype.$client.getUsers().then(({ users }) => {
-        commit("setUsers", users);
+        commit('setUsers', users);
       });
     },
 
     fetchConversations({ commit }) {
       Vue.prototype.$client.getConversations().then(({ conversations }) => {
-        commit("setConversations", conversations);
+        commit('setConversations', conversations);
       });
     },
-    
+
     createOneToOneConversation({ commit }, username) {
-      const promise = Vue.prototype.$client.getOrCreateOneToOneConversation(
-        username
-      );
+      const promise = Vue.prototype.$client.getOrCreateOneToOneConversation(username);
 
       promise.then(({ conversation }) => {
-         commit("upsertConversation", {
-           conversation
-         });
+        commit('upsertConversation', {
+          conversation
+        });
 
         router.push({
-          name: "Conversation",
+          name: 'Conversation',
           params: { id: conversation.id }
         });
       });
@@ -160,19 +165,17 @@ export default new Vuex.Store({
       return promise;
     },
 
-    createManyToManyConversation({ commit }, usernames ) {
-      const promise = Vue.prototype.$client.createManyToManyConversation(
-        usernames
-      );
-      console.log("usernames : " , usernames);
+    createManyToManyConversation({ commit }, usernames) {
+      const promise = Vue.prototype.$client.createManyToManyConversation(usernames);
+      console.log('usernames : ', usernames);
 
       promise.then(({ conversation }) => {
-      //   commit("upsertConversation", {
-          // conversation
-         //});
+        commit('upsertConversation', {
+          conversation
+        });
 
         router.push({
-          name: "Conversation",
+          name: 'Conversation',
           params: { id: conversation.id }
         });
       });
