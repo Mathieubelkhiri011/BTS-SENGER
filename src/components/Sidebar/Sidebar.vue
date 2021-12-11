@@ -44,11 +44,7 @@
       <div class="conversation-search">
         <div class="ui fluid search">
           <div class="ui icon input">
-            <input
-              class="prompt"
-              placeholder="Rechercher une conversation"
-              type="text"
-            />
+            <input class="prompt" placeholder="Rechercher une conversation" type="text" />
             <i class="search icon"> </i>
           </div>
         </div>
@@ -65,11 +61,7 @@
           <div class="text">C'est vraiment super Alice !</div>
         </div>
       </div>
-      <div
-        class="conversation"
-        title="Groupe: Gael, Bob"
-        @click="openConversation(0)"
-      >
+      <div class="conversation" title="Groupe: Gael, Bob" @click="openConversation(0)">
         <a class="avatar">
           <span>
             <i class="users icon"> </i>
@@ -83,11 +75,7 @@
           <div class="text">Incroyable !</div>
         </div>
       </div>
-      <div
-        class="conversation available"
-        title="Cha"
-        @click="openConversation(0)"
-      >
+      <div class="conversation available" title="Cha" @click="print()">
         <a class="avatar">
           <img src="https://source.unsplash.com/8wbxjJBrl3k/100x100" />
         </a>
@@ -99,11 +87,7 @@
           <div class="text">Nouvelle conversation</div>
         </div>
       </div>
-      <div
-        class="conversation selected"
-        title="Derek"
-        @click="openConversation(0)"
-      >
+      <div class="conversation selected" title="Derek" @click="openConversation(0)">
         <a class="avatar">
           <img src="https://source.unsplash.com/FUcupae92P4/100x100" />
         </a>
@@ -120,33 +104,36 @@
 </template>
 
 <script>
-import router from "@/router";
-import { mapActions, mapGetters } from "vuex";
+import router from '@/router';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
-  name: "Sidebar",
+  name: 'Sidebar',
   data() {
     return {
-      search: ""
+      search: ''
     };
   },
   methods: {
-    ...mapActions(["deauthenticate"]),
+    ...mapActions(['deauthenticate']),
+    print() {
+      console.log('Les conversations :', this.conversations);
+    },
     openCommunity() {
-      router.push({ name: "Community" });
+      router.push({ name: 'Community' });
     },
     openMessageSearch() {
-      router.push({ name: "Search" });
+      router.push({ name: 'Search' });
     },
     openConversation(id) {
-      router.push({ name: "Conversation", params: { id } });
+      router.push({ name: 'Conversation', params: { id } });
     },
-    openGroupeProjet(){
-      router.push({ name: "openGroupeProjet" });
+    openGroupeProjet() {
+      router.push({ name: 'openGroupeProjet' });
     }
   },
   computed: {
-    ...mapGetters(["user", "conversations"])
+    ...mapGetters(['user', 'conversations'])
   }
 };
 </script>
