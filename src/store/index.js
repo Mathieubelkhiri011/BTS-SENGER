@@ -181,6 +181,18 @@ export default new Vuex.Store({
       });
 
       return promise;
+    },
+    postMessage({ commit }, { conversation, content }) {
+      console.log('content ', content);
+      const promise = Vue.prototype.$client.postMessage(conversation.id, content);
+
+      console.log('promise postMessage', promise);
+      promise.then(({ message }) => {
+        conversation.messages.push(message);
+        commit('upsertConversation', {
+          conversation
+        });
+      });
     }
   }
 });

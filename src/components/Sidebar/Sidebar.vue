@@ -10,7 +10,7 @@
 
         <div class="user-info-status ui simple dropdown">
           <div class="available text">
-            En ligne
+            En lig
           </div>
           <i class="dropdown icon"> </i>
           <div class="menu">
@@ -29,7 +29,7 @@
         <br />
         <span>Communauté</span>
       </div>
-      <div v-if="true" class="blue button" @click="openMessageSearch">
+      <div v-if="true" class="blue button" @click="print()">
         <i class="search icon"> </i>
         <br />
         <span>Messages</span>
@@ -40,54 +40,35 @@
         <span>GroupeDev</span>
       </div>
     </div>
+
     <div class="conversations">
       <div class="conversation-search">
         <div class="ui fluid search">
           <div class="ui icon input">
-            <input
-              class="prompt"
-              placeholder="Rechercher une conversation"
-              type="text"
-            />
+            <input v-model="search" class="prompt" placeholder="Rechercher une conversation" type="text" />
             <i class="search icon"> </i>
           </div>
         </div>
       </div>
-      <div class="conversation new" title="Bob" @click="openConversation(0)">
+      <div
+        class="conversation"
+        v-for="laconversation in FilterConversations"
+        :key="laconversation.id"
+        @click="openConversation(laconversation.id)"
+      >
         <a class="avatar">
-          <img src="https://source.unsplash.com/7omHUGhhmZ0/100x100" />
+          <img src="https://clic-igeac.org/wp-content/uploads/2021/03/group-1824145_1280.png" />
         </a>
         <div class="content">
           <div class="metadata">
-            <div class="title"><i class="ui small icon circle"> </i> Bob</div>
+            <div class="title"><i class="ui small icon circle"> </i> {{ laconversation.title }}</div>
             <span class="time">01:30:58</span>
           </div>
           <div class="text">C'est vraiment super Alice !</div>
         </div>
       </div>
-      <div
-        class="conversation"
-        title="Groupe: Gael, Bob"
-        @click="openConversation(0)"
-      >
-        <a class="avatar">
-          <span>
-            <i class="users icon"> </i>
-          </span>
-        </a>
-        <div class="content">
-          <div class="metadata">
-            <div class="title">Groupe: Gael, Bob</div>
-            <span class="time">01:36:38</span>
-          </div>
-          <div class="text">Incroyable !</div>
-        </div>
-      </div>
-      <div
-        class="conversation available"
-        title="Cha"
-        @click="openConversation(0)"
-      >
+
+      <div class="conversation available" title="Cha" @click="openConversation(0)">
         <a class="avatar">
           <img src="https://source.unsplash.com/8wbxjJBrl3k/100x100" />
         </a>
@@ -99,11 +80,8 @@
           <div class="text">Nouvelle conversation</div>
         </div>
       </div>
-      <div
-        class="conversation selected"
-        title="Derek"
-        @click="openConversation(0)"
-      >
+
+      <div class="conversation selected" title="Derek" @click="openConversation(0)">
         <a class="avatar">
           <img src="https://source.unsplash.com/FUcupae92P4/100x100" />
         </a>
@@ -120,33 +98,49 @@
 </template>
 
 <script>
-import router from "@/router";
-import { mapActions, mapGetters } from "vuex";
+import router from '@/router';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
-  name: "Sidebar",
+  name: 'Sidebar',
   data() {
     return {
-      search: ""
+      search: '',
+      isActive: false
     };
   },
   methods: {
-    ...mapActions(["deauthenticate"]),
+    ...mapActions(['deauthenticate']),
+    print() {
+      console.log('Les conversations :', this.conversations);
+    },
     openCommunity() {
-      router.push({ name: "Community" });
+      router.push({ name: 'Community' });
     },
     openMessageSearch() {
-      router.push({ name: "Search" });
+      router.push({ name: 'Search' });
     },
     openConversation(id) {
-      router.push({ name: "Conversation", params: { id } });
+      router.push({ name: 'Conversation', params: { id } });
     },
-    openGroupeProjet(){
-      router.push({ name: "openGroupeProjet" });
+    openGroupeProjet() {
+      router.push({ name: 'openGroupeProjet' });
+    },
+    activeclass() {
+      this.isActive = !this.isActive;
     }
   },
   computed: {
-    ...mapGetters(["user", "conversations"])
+    ...mapGetters(['user', 'conversations']),
+    FilterConversations() {
+      let FilterConversations = [];
+      FilterConversations = this.conversations.map(conversation => ({
+        ...conversation
+      }));
+      return FilterConversations.filter(conversation =>
+        conversation.title.toLowerCase().includes(this.search.toLowerCase())
+      );
+    }
   }
 };
 </script>
