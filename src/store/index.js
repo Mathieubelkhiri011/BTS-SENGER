@@ -93,13 +93,12 @@ export default new Vuex.Store({
         Vue.set(state.conversations, localConversationIndex, conversation);
       } else {
         state.conversations.push({
-          ...conversation,
-          titre: 'toto'
+          ...conversation
         });
       }
     },
 
-    upsertMessage(state, { conversation_id, message }) {
+    upsertMessages(state, { conversation_id, message }) {
       const localConversationIndex = state.conversations.findIndex(
         _conversation => _conversation.id === conversation_id
       );
@@ -203,9 +202,9 @@ export default new Vuex.Store({
 
       console.log('promise postMessage', promise);
       promise.then(({ message }) => {
-        conversation.messages.push(message);
-        commit('upsertConversation', {
-          conversation
+        commit('upsertMessages', {
+          conversation_id: conversation.id,
+          message: message
         });
       });
     },
@@ -229,15 +228,16 @@ export default new Vuex.Store({
         });
       });
     },
+
     replyMessage({ commit }, { conversation, messageId, content }) {
       console.log('content ', content);
       const promise = Vue.prototype.$client.replyMessage(conversation.id, messageId, content);
 
       console.log('promiseReplyMessage', promise);
       promise.then(({ message }) => {
-        conversation.messages.push(message);
-        commit('upsertConversation', {
-          conversation
+        commit('upsertMessages', {
+          conversation_id: conversation.id,
+          message: message
         });
       });
     }
