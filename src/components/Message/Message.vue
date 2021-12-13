@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="time">{{ message.posted_at }}</div>
+    <div class="time">{{ new Date(message.posted_at).toLocaleTimeString() }}</div>
     <div v-if="message.from === usernameUserConnecte" class="message mine">
       <div class="bubble top bottom">{{ message.content }}</div>
       <div class="reacts"></div>
@@ -27,35 +27,22 @@
 </template>
 
 <script>
-import Group from '@/components/Group/Group';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'Message',
-  components: { Group },
   props: ['message'],
   data() {
     return {
       groupPanel: false,
-      message: '',
+      monMessage: '',
       usernameUserConnecte: localStorage.getItem('username')
     };
   },
-  mounted() {
-    this.scrollBottom();
-  },
-  updated() {
-    this.scrollBottom();
-  },
   computed: {
     ...mapGetters(['users'])
-  },
-  methods: {
-    print() {
-      console.log('Le message: ', message);
-    }
   }
 };
 </script>
 
-<style src="./Conversation.css" scoped />
+<style src="./Message.css" scoped />
