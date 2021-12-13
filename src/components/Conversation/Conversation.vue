@@ -241,8 +241,7 @@
               </div>
             </div>
             <div v-for="message in this.conversation.messages" :key="message.id">
-              <div class="time">{{ message.posted_at }}</div>
-
+              <div class="time">{{ new Date(message.posted_at).toLocaleTimeString() }}</div>
               <div v-if="message.from === usernameUserConnecte" class="message mine">
                 <div class="bubble top bottom">{{ message.content }}</div>
                 <div class="reacts"></div>
@@ -339,9 +338,11 @@ export default {
   methods: {
     ...mapActions(['postMessage']),
     print() {
-      console.log('Users: ', this.users);
-      console.log('Les conversations: ', this.conversations);
-      console.log('La conversation: ', this.conversation);
+      console.log('jour actuelle : ', Date.now());
+      console.log('heure actuelle : ');
+      console.log('date base : ', this.conversations[0].messages[0].posted_at);
+      console.log('Jour : ', new Date(this.conversations[0].messages[0].posted_at).toLocaleDateString());
+      console.log('Heure : ', new Date(this.conversations[0].messages[0].posted_at).toLocaleTimeString());
     },
     scrollBottom() {
       setTimeout(() => {
@@ -359,7 +360,6 @@ export default {
       });
       promise.finally(() => {
         this.message = '';
-        console.log('Message envoyé');
       });
     }
   },

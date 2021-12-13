@@ -100,6 +100,25 @@ export default new Vuex.Store({
           ...conversation
         });
       }
+    },
+
+    upsertMessages(state, { conversation_id, message }) {
+      const localConversationIndex = state.conversations.findIndex(
+        _conversation => _conversation.id === conversation_id
+      );
+      if (localConversationIndex !== -1) {
+        const localMessageIndex = state.conversations[localConversationIndex].messages.findIndex(
+          _message => _message.id === message.id
+        );
+        if (localMessageIndex !== -1) {
+          Vue.set(state.conversations[localConversationIndex].messages, localMessageIndex, message);
+        } else {
+          state.conversations[localConversationIndex].messages.push({
+            ...message
+          });
+        }
+        state.conversations[localConversationIndex].updated_at = new Date().toISOString();
+      }
     }
   },
   actions: {
