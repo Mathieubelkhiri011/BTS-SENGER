@@ -35,11 +35,7 @@ export default new Vuex.Store({
     },
     conversations(state) {
       return state.conversations.map(conversation => {
-        let participantToTitle = conversation.participants;
-        const indexOfConnectedUser = conversation.participants.indexOf(localStorage.getItem('username'));
-        if (indexOfConnectedUser > -1) {
-          participantToTitle.splice(indexOfConnectedUser, 1);
-        }
+        let participantToTitle = conversation.participants.filter(item => item !== state.user.username);
         return {
           ...conversation,
           title: participantToTitle.join(', ')
@@ -102,7 +98,7 @@ export default new Vuex.Store({
       }
     },
 
-    upsertMessages(state, { conversation_id, message }) {
+    upsertMessage(state, { conversation_id, message }) {
       const localConversationIndex = state.conversations.findIndex(
         _conversation => _conversation.id === conversation_id
       );
@@ -207,6 +203,26 @@ export default new Vuex.Store({
       console.log('promise postMessage', promise);
       promise.then(({ message }) => {
         conversation.messages.push(message);
+        commit('upsertConversation', {
+          conversation
+        });
+      });
+    },
+
+    addParticipant({ commit }, { conversation, user }) {
+      const promise = Vue.prototype.$client.addParticipant(conversation.id, user.username);
+
+      promise.then(({ conversation }) => {
+        commit('upsertConversation', {
+          conversation
+        });
+      });
+    },
+
+    removeParticipant({ commit }, { conversation, user }) {
+      const promise = Vue.prototype.$client.removeParticipant(conversation.id, user.username);
+
+      promise.then(({ conversation }) => {
         commit('upsertConversation', {
           conversation
         });
