@@ -203,13 +203,6 @@
   text-align: justify;
 }
 
-
-
-.conversation :hover {
-
- color:red;
-}
-
 @media screen and (max-width: 800px) {
   .conversations {
     top: 0;
