@@ -50,95 +50,6 @@
       <div class="conversation-main">
         <div class="conversation-body" id="scroll">
           <div class="wrapper">
-            <div class="time">01:32:08</div>
-            <div class="message mine">
-              <div class="bubble top bottom">Hello les amis !</div>
-              <div class="reacts"></div>
-              <div class="controls">
-                <i title="Supprimer" class="circular trash icon"></i><i title="Editer" class="circular edit icon"></i
-                ><i title="Répondre" class="circular reply icon"></i>
-              </div>
-            </div>
-            <div class="time">01:32:14</div>
-            <div class="message">
-              <img title="Bob" src="https://source.unsplash.com/7omHUGhhmZ0/100x100" />
-              <div class="bubble top bottom">Hello !</div>
-              <div class="reacts"></div>
-              <div class="controls">
-                <i title="Répondre" class="circular reply icon"></i
-                ><span class="react"
-                  ><i title="Aimer" class="circular heart outline icon"></i
-                  ><i title="Pouce en l'air" class="circular thumbs up outline icon"></i
-                  ><i title="Content" class="circular smile outline icon"></i
-                  ><i title="Pas content" class="circular frown outline icon"></i
-                ></span>
-              </div>
-            </div>
-            <div class="message">
-              <img title="Alice" src="https://source.unsplash.com/mK_sjD0FrXw/100x100" />
-              <div class="bubble top bottom">Coucou !</div>
-              <div class="reacts"></div>
-              <div class="controls">
-                <i title="Répondre" class="circular reply icon"></i
-                ><span class="react"
-                  ><i title="Aimer" class="circular heart outline icon"></i
-                  ><i title="Pouce en l'air" class="circular thumbs up outline icon"></i
-                  ><i title="Content" class="circular smile outline icon"></i
-                  ><i title="Pas content" class="circular frown outline icon"></i
-                ></span>
-              </div>
-            </div>
-            <div class="time">01:32:31</div>
-            <div class="message mine">
-              <div class="bubble top bottom">Vous allez bien ?</div>
-              <div class="reacts"></div>
-              <div class="controls">
-                <i title="Supprimer" class="circular trash icon"></i><i title="Editer" class="circular edit icon"></i
-                ><i title="Répondre" class="circular reply icon"></i>
-              </div>
-            </div>
-            <div class="time">01:32:38</div>
-            <div class="message">
-              <img title="Alice" src="https://source.unsplash.com/mK_sjD0FrXw/100x100" />
-              <div class="bubble top bottom">Oui ça va et toi ?</div>
-              <div class="reacts"></div>
-              <div class="controls">
-                <i title="Répondre" class="circular reply icon"></i
-                ><span class="react"
-                  ><i title="Aimer" class="circular heart outline icon"></i
-                  ><i title="Pouce en l'air" class="circular thumbs up outline icon"></i
-                  ><i title="Content" class="circular smile outline icon"></i
-                  ><i title="Pas content" class="circular frown outline icon"></i
-                ></span>
-              </div>
-            </div>
-            <div class="time">01:32:48</div>
-            <div class="message mine">
-              <div class="bubble top">Ca va super !</div>
-              <div class="reacts"></div>
-              <div class="controls">
-                <i title="Supprimer" class="circular trash icon"></i><i title="Editer" class="circular edit icon"></i
-                ><i title="Répondre" class="circular reply icon"></i>
-              </div>
-            </div>
-            <div class="message mine">
-              <div class="bubble middle">
-                Je viens de découvrir ce nouveau chat
-              </div>
-              <div class="reacts"></div>
-              <div class="controls">
-                <i title="Supprimer" class="circular trash icon"></i><i title="Editer" class="circular edit icon"></i
-                ><i title="Répondre" class="circular reply icon"></i>
-              </div>
-            </div>
-            <div class="message mine">
-              <div class="bubble bottom">C'est vraiment chouette</div>
-              <div class="reacts"></div>
-              <div class="controls">
-                <i title="Supprimer" class="circular trash icon"></i><i title="Editer" class="circular edit icon"></i
-                ><i title="Répondre" class="circular reply icon"></i>
-              </div>
-            </div>
             <div class="time">01:33:32</div>
             <div class="message">
               <div class="bubble top">Oui je l'aime beaucoup aussi</div>
@@ -240,30 +151,9 @@
                 ><i title="Répondre" class="circular reply icon"></i>
               </div>
             </div>
+
             <div v-for="message in this.conversation.messages" :key="message.id">
-              <div class="time">{{ new Date(message.posted_at).toLocaleTimeString() }}</div>
-              <div v-if="message.from === usernameUserConnecte" class="message mine">
-                <div class="bubble top bottom">{{ message.content }}</div>
-                <div class="reacts"></div>
-                <div class="controls">
-                  <i title="Supprimer" class="circular trash icon"></i><i title="Editer" class="circular edit icon"></i
-                  ><i title="Répondre" class="circular reply icon"></i>
-                </div>
-              </div>
-              <div v-else class="message">
-                <img title="Bob" src="https://source.unsplash.com/7omHUGhhmZ0/100x100" />
-                <div class="bubble top bottom">{{ message.content }}</div>
-                <div class="reacts"></div>
-                <div class="controls">
-                  <i title="Répondre" class="circular reply icon"></i
-                  ><span class="react"
-                    ><i title="Aimer" class="circular heart outline icon"></i
-                    ><i title="Pouce en l'air" class="circular thumbs up outline icon"></i
-                    ><i title="Content" class="circular smile outline icon"></i
-                    ><i title="Pas content" class="circular frown outline icon"></i
-                  ></span>
-                </div>
-              </div>
+              <Message :message="message"> </Message>
             </div>
             <div class="view">
               <img title="Vu par Alice à 01:36:39" src="https://source.unsplash.com/mK_sjD0FrXw/100x100" /><img
@@ -292,7 +182,7 @@
             <div class="ui fluid search">
               <div class="ui icon input">
                 <input
-                  v-model="message"
+                  v-model="message.content"
                   class="prompt"
                   type="text"
                   placeholder="Rédiger un message"
@@ -313,15 +203,19 @@
 
 <script>
 import Group from '@/components/Group/Group';
+import Message from '@/components/Message/Message';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'Conversation',
-  components: { Group },
+  components: { Group, Message },
   data() {
     return {
       groupPanel: false,
-      message: '',
+      message: {
+        content: '',
+        replyTo: ''
+      },
       usernameUserConnecte: localStorage.getItem('username')
     };
   },
@@ -335,13 +229,9 @@ export default {
     ...mapGetters(['users', 'conversation', 'conversations', 'authenticating'])
   },
   methods: {
-    ...mapActions(['postMessage']),
+    ...mapActions(['postMessage', 'replyMessage']),
     print() {
-      console.log('jour actuelle : ', Date.now());
-      console.log('heure actuelle : ');
-      console.log('date base : ', this.conversations[0].messages[0].posted_at);
-      console.log('Jour : ', new Date(this.conversations[0].messages[0].posted_at).toLocaleDateString());
-      console.log('Heure : ', new Date(this.conversations[0].messages[0].posted_at).toLocaleTimeString());
+      console.log('La conversation ', this.conversation);
     },
     scrollBottom() {
       setTimeout(() => {
@@ -352,13 +242,13 @@ export default {
       }, 0);
     },
     sendMessage() {
-      console.log('message: ', this.message);
+      console.log('message: ', this.message.content);
       let promise = this.postMessage({
         conversation: this.conversation,
-        content: this.message
+        content: this.message.content
       });
       promise.finally(() => {
-        this.message = '';
+        this.message.content = '';
       });
     }
   },

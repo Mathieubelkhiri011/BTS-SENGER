@@ -228,6 +228,18 @@ export default new Vuex.Store({
           conversation
         });
       });
+    },
+    replyMessage({ commit }, { conversation, messageId, content }) {
+      console.log('content ', content);
+      const promise = Vue.prototype.$client.replyMessage(conversation.id, messageId, content);
+
+      console.log('promiseReplyMessage', promise);
+      promise.then(({ message }) => {
+        conversation.messages.push(message);
+        commit('upsertConversation', {
+          conversation
+        });
+      });
     }
   }
 });
