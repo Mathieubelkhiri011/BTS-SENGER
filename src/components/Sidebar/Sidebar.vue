@@ -54,11 +54,16 @@
         class="conversation"
         v-for="laconversation in FilterConversations"
         :key="laconversation.id"
+        :class="{ selected: laconversation.id === conversationIsActive }"
         @click="openConversation(laconversation.id)"
       >
-        <a class="avatar">
-          <img src="https://clic-igeac.org/wp-content/uploads/2021/03/group-1824145_1280.png" />
-        </a>
+        <img
+          v-if="laconversation.type === 'one_to_one'"
+          :src="users.find(e => e.username === laconversation.participants[0]).picture_url"
+          class="avatar"
+        />
+        <img v-else src="https://clic-igeac.org/wp-content/uploads/2021/03/group-1824145_1280.png" class="avatar" />
+
         <div class="content">
           <div class="metadata">
             <div class="title"><i class="ui small icon circle"> </i> {{ laconversation.title }}</div>
@@ -105,14 +110,15 @@ export default {
   name: 'Sidebar',
   data() {
     return {
+      usernameUserConnecte: localStorage.getItem('username'),
       search: '',
-      isActive: false
+      conversationIsActive: ''
     };
   },
   methods: {
     ...mapActions(['deauthenticate']),
     print() {
-      console.log('Les conversations :', this.conversations);
+      console.log('conversation: ', this.conversations.type);
     },
     openCommunity() {
       router.push({ name: 'Community' });
@@ -121,17 +127,16 @@ export default {
       router.push({ name: 'Search' });
     },
     openConversation(id) {
+      this.conversationIsActive = id;
       router.push({ name: 'Conversation', params: { id } });
     },
     openGroupeProjet() {
       router.push({ name: 'openGroupeProjet' });
     },
-    activeclass() {
-      this.isActive = !this.isActive;
-    }
+    activeclass() {}
   },
   computed: {
-    ...mapGetters(['user', 'conversations']),
+    ...mapGetters(['user', 'users', 'conversations', 'conversation']),
     FilterConversations() {
       let FilterConversations = [];
       FilterConversations = this.conversations.map(conversation => ({

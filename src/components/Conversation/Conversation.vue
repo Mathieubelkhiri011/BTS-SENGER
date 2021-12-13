@@ -242,6 +242,7 @@
             </div>
             <div v-for="message in this.conversation.messages" :key="message.id">
               <div class="time">{{ message.posted_at }}</div>
+
               <div v-if="message.from === usernameUserConnecte" class="message mine">
                 <div class="bubble top bottom">{{ message.content }}</div>
                 <div class="reacts"></div>
@@ -298,6 +299,7 @@
                   placeholder="Rédiger un message"
                   @keyup.enter="sendMessage()"
                 />
+
                 <i class="send icon link" @click="sendMessage()"></i>
               </div>
             </div>

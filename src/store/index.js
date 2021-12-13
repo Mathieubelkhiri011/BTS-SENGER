@@ -97,8 +97,7 @@ export default new Vuex.Store({
         Vue.set(state.conversations, localConversationIndex, conversation);
       } else {
         state.conversations.push({
-          ...conversation,
-          titre: 'toto'
+          ...conversation
         });
       }
     }
