@@ -93,7 +93,8 @@ export default new Vuex.Store({
         Vue.set(state.conversations, localConversationIndex, conversation);
       } else {
         state.conversations.push({
-          ...conversation
+          ...conversation,
+          titre: 'toto'
         });
       }
     },
@@ -223,6 +224,18 @@ export default new Vuex.Store({
       const promise = Vue.prototype.$client.removeParticipant(conversation.id, user.username);
 
       promise.then(({ conversation }) => {
+        commit('upsertConversation', {
+          conversation
+        });
+      });
+    },
+    replyMessage({ commit }, { conversation, messageId, content }) {
+      console.log('content ', content);
+      const promise = Vue.prototype.$client.replyMessage(conversation.id, messageId, content);
+
+      console.log('promiseReplyMessage', promise);
+      promise.then(({ message }) => {
+        conversation.messages.push(message);
         commit('upsertConversation', {
           conversation
         });
