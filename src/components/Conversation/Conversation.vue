@@ -188,6 +188,7 @@
                   placeholder="Rédiger un message"
                   @keyup.enter="sendMessage()"
                 />
+
                 <i class="send icon link" @click="sendMessage()"></i>
               </div>
             </div>
