@@ -42,8 +42,13 @@ export default new Vuex.Store({
         }
         return {
           ...conversation,
-          title: participantToTitle.join(', ')
-          //TODO
+          title: participantToTitle.join(', '),
+          lastMessage: {
+            posted_at:
+              conversation.messages.length > 0 ? conversation.messages[conversation.messages.length - 1].posted_at : '',
+            content:
+              conversation.messages.length > 0 ? conversation.messages[conversation.messages.length - 1].content : ''
+          }
         };
       });
     },

@@ -67,9 +67,12 @@
         <div class="content">
           <div class="metadata">
             <div class="title"><i class="ui small icon circle"> </i> {{ laconversation.title }}</div>
-            <span class="time">01:30:58</span>
+
+            <div class="time" v-if="laconversation.lastMessage.posted_at != ''">
+              {{ new Date(laconversation.lastMessage.posted_at).toLocaleTimeString() }}
+            </div>
           </div>
-          <div class="text">C'est vraiment super Alice !</div>
+          <div class="text">{{ laconversation.lastMessage.content }}</div>
         </div>
       </div>
 
@@ -108,6 +111,7 @@ import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'Sidebar',
+
   data() {
     return {
       usernameUserConnecte: localStorage.getItem('username'),
@@ -118,7 +122,7 @@ export default {
   methods: {
     ...mapActions(['deauthenticate']),
     print() {
-      console.log('conversation: ', this.conversations.type);
+      console.log('conversation: ', this.conversations);
     },
     openCommunity() {
       router.push({ name: 'Community' });
@@ -132,8 +136,7 @@ export default {
     },
     openGroupeProjet() {
       router.push({ name: 'openGroupeProjet' });
-    },
-    activeclass() {}
+    }
   },
   computed: {
     ...mapGetters(['user', 'users', 'conversations', 'conversation']),
@@ -142,9 +145,12 @@ export default {
       FilterConversations = this.conversations.map(conversation => ({
         ...conversation
       }));
+
       return FilterConversations.filter(conversation =>
         conversation.title.toLowerCase().includes(this.search.toLowerCase())
-      );
+      ).sort(function(a, b) {
+        return new Date(b.lastMessage.posted_at) - new Date(a.lastMessage.posted_at);
+      });
     }
   }
 };

@@ -338,11 +338,7 @@ export default {
   methods: {
     ...mapActions(['postMessage']),
     print() {
-      console.log('jour actuelle : ', Date.now());
-      console.log('heure actuelle : ');
-      console.log('date base : ', this.conversations[0].messages[0].posted_at);
-      console.log('Jour : ', new Date(this.conversations[0].messages[0].posted_at).toLocaleDateString());
-      console.log('Heure : ', new Date(this.conversations[0].messages[0].posted_at).toLocaleTimeString());
+      console.log('jour actuelle : ', this.conversations);
     },
     scrollBottom() {
       setTimeout(() => {
