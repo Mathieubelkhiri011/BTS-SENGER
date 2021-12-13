@@ -251,7 +251,7 @@
                 </div>
               </div>
               <div v-else class="message">
-                <img title="Bob" src="https://source.unsplash.com/7omHUGhhmZ0/100x100" />
+                <img title="Bob" :src="users.find(e => e.username === message.from).picture_url" />
                 <div class="bubble top bottom">{{ message.content }}</div>
                 <div class="reacts"></div>
                 <div class="controls">
