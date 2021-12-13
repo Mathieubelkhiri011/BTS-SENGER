@@ -19,21 +19,24 @@
       >
       <i title="Modifier le surnom" class="circular quote left link icon"></i>
       <i
+        v-if="UsersConversations.length > 3"
         title="Enlever de la conversation"
-        @click="RemoveUser(user.username)"
+        @click="RemoveUser(user)"
         class="circular times icon link"
         style=""
       ></i>
     </div>
-    <div class="spanner">
-      <hr />
-      <span>Communauté</span>
-      <hr />
-    </div>
-    <div class="user" v-for="user in FilterUsers" :key="user.token">
-      <img v-bind:src="user.picture_url" />
-      <span> {{ user.username }} </span>
-      <i title="Ajouter à la conversation" @click="addUser(user.username)" class="circular plus icon link"></i>
+    <div v-if="UsersConversations.length > 2">
+      <div class="spanner">
+        <hr />
+        <span>Communauté</span>
+        <hr />
+      </div>
+      <div class="user" v-for="user in FilterUsers" :key="user.token">
+        <img v-bind:src="user.picture_url" />
+        <span> {{ user.username }} </span>
+        <i title="Ajouter à la conversation" @click="addUser(user)" class="circular plus icon link"></i>
+      </div>
     </div>
   </div>
 </template>
@@ -46,12 +49,16 @@ export default {
   data() {
     return {
       search: '',
-      UsersConversations: [],
       usernameUserConnecte: localStorage.getItem('username')
     };
   },
   computed: {
     ...mapGetters(['users', 'conversation']),
+
+    UsersConversations() {
+      console.log('this.conversation.participants : ', this.conversation.participants);
+      return this.users.filter(user => this.conversation.participants.find(element => element === user.username));
+    },
 
     FilterUsers() {
       let FilterUsers = [];
@@ -65,62 +72,29 @@ export default {
     }
   },
   methods: {
-    ...mapActions([]),
+    ...mapActions(['addParticipant', 'removeParticipant']),
 
-    AllUsersConversations() {
-      this.UsersConversations = this.users.map(user => ({
-        ...user
-      }));
-      return this.UsersConversations.filter(user =>
-        this.conversation.participants.find(element => element === user.username)
-      );
+    addUser(user) {
+      let promise = this.addParticipant({
+        conversation: this.conversation,
+        user: user
+      });
+      promise.finally(() => {
+        console.log('Participant ajouté !');
+      });
     },
 
-    addUser(username) {
-      this.conversation.participants.push(username);
-      console.log(this.conversation.participants, ' : ', username);
-      this.UsersConversations = this.users.filter(user =>
-        this.conversation.participants.find(element => element === user.username)
-      );
-      this.UsersConversations = this.UsersConversations.filter(
-        user1 => !this.UsersConversations.find(element => user1.username === this.usernameUserConnecte)
-      );
+    RemoveUser(user) {
+      let promise = this.removeParticipant({
+        conversation: this.conversation,
+        user: user
+      });
+      promise.finally(() => {
+        console.log('Participant retiré !');
+      });
     },
 
-    RemoveUser(username) {
-      let i = 0;
-
-      for (const key of this.conversation.participants) {
-        if (key === username) {
-          this.conversation.participants.splice(i, 1);
-        }
-        i = i + 1;
-      }
-
-      this.UsersConversations = this.users.filter(user =>
-        this.conversation.participants.find(element => element === user.username)
-      );
-      this.UsersConversations = this.UsersConversations.filter(
-        user1 => !this.UsersConversations.find(element => user1.username === this.usernameUserConnecte)
-      );
-    },
-
-    print() {
-      this.UsersConversations = this.users.filter(user =>
-        this.conversation.participants.find(element => element === user.username)
-      );
-      this.UsersConversations = this.UsersConversations.filter(
-        user1 => !this.UsersConversations.find(element => user1.username === this.usernameUserConnecte)
-      );
-    }
-  },
-  mounted() {
-    this.UsersConversations = this.users.filter(user =>
-      this.conversation.participants.find(element => element === user.username)
-    );
-    this.UsersConversations = this.UsersConversations.filter(
-      user1 => !this.UsersConversations.find(element => user1.username === this.usernameUserConnecte)
-    );
+    print() {}
   }
 };
 </script>
