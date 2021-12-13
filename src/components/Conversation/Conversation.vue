@@ -153,7 +153,7 @@
             </div>
 
             <div v-for="message in this.conversation.messages" :key="message.id">
-              <Message :message="message"> </Message>
+              <Message :message="message" @onReply="replyToMsg"> </Message>
             </div>
             <div class="view">
               <img title="Vu par Alice à 01:36:39" src="https://source.unsplash.com/mK_sjD0FrXw/100x100" /><img
@@ -171,11 +171,11 @@
         </div>
         <div class="conversation-footer">
           <div class="wrapper">
-            <p>
-              <i title="Abandonner" class="circular times small icon link" @click="print()"></i>
-              Répondre à Alice :
+            <p v-if="this.message.replyTo.id !== -1">
+              <i title="Abandonner" class="circular times small icon link" @click="print"></i>
+              Répondre à {{ this.message.replyTo.from }} :
               <span>
-                On peut même éditer ou supprimer des messages !
+                {{ this.message.replyTo.content }}
               </span>
             </p>
 
@@ -215,9 +215,8 @@ export default {
       groupPanel: false,
       message: {
         content: '',
-        replyTo: ''
-      },
-      usernameUserConnecte: localStorage.getItem('username')
+        replyTo: { id: -1, from: '', content: '' }
+      }
     };
   },
   mounted() {
@@ -227,12 +226,12 @@ export default {
     this.scrollBottom();
   },
   computed: {
-    ...mapGetters(['users', 'conversation', 'conversations', 'authenticating'])
+    ...mapGetters(['user', 'users', 'conversation', 'conversations', 'authenticating'])
   },
   methods: {
     ...mapActions(['postMessage', 'replyMessage']),
     print() {
-      console.log('La conversation ', this.conversation);
+      console.log('la conv', this.conversation);
     },
     scrollBottom() {
       setTimeout(() => {
@@ -244,13 +243,32 @@ export default {
     },
     sendMessage() {
       console.log('message: ', this.message.content);
-      let promise = this.postMessage({
-        conversation: this.conversation,
-        content: this.message.content
-      });
+      let promise;
+      if (this.message.replyTo.id === -1) {
+        console.log('message normal');
+        //message normal
+        promise = this.postMessage({
+          conversation: this.conversation,
+          content: this.message.content
+        });
+      } else {
+        console.log('message a reply');
+        promise = this.replyMessage({
+          conversation: this.conversation,
+          messageId: this.message.replyTo.id,
+          content: this.message.content
+        });
+      }
+
       promise.finally(() => {
-        this.message.content = '';
+        this.message = {
+          content: '',
+          replyTo: { id: -1, from: '', content: '' }
+        };
       });
+    },
+    replyToMsg(msg) {
+      this.message.replyTo = { msg };
     }
   },
   watch: {
