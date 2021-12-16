@@ -12,7 +12,7 @@
 
       <div class="title">
         <div class="ui compact">
-          <i class="icon circle" v-if="isOnline"></i>
+          <i class="icon circle" :class="{ available: isOnline }"></i>
           <span>{{ this.conversation.title.substring(0, 40) }}</span>
 
           <span v-if="this.conversation.title.length > 40">...</span>
