@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div v-if="!message.deleted">
     <div class="time">{{ new Date(message.posted_at).toLocaleTimeString() }}</div>
-    <div v-if="message.from === this.user.username" class="message mine">
+    <div v-if="message.from === this.user.username" class="message mine" @click="print(message)">
       <div v-if="message.reply_to" class="bubble middle">
         <p class="reply_content">{{ message.reply_to.content }}</p>
         {{ message.content }}
@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="controls">
-        <i title="Supprimer" class="circular trash icon"></i>
+        <i title="Supprimer" class="circular trash icon" @click="deleteMsg()"></i>
         <i
           title="Editer"
           class="circular edit icon"
@@ -53,6 +53,11 @@
       </div>
     </div>
   </div>
+  <div v-else class="message " :class="message.from === user.username ? 'mine' : ''" @click="print(message)">
+    <div class="bubble bubble-deleted top bottom">
+      Message supprimé
+    </div>
+  </div>
 </template>
 
 <script>
@@ -88,9 +93,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['reactMessage']),
-    print() {
-      console.log('reacts : ', this.message.reactions);
+    ...mapActions(['reactMessage', 'deleteMessage']),
+    print(message) {
+      console.log('message : ', message);
     },
     addReaction(valueReact) {
       console.log(valueReact);
@@ -115,6 +120,15 @@ export default {
         case 'SAD':
           return 'frown';
       }
+    },
+    deleteMsg() {
+      let promise = this.deleteMessage({
+        conversation: this.conversation,
+        messageId: this.message.id
+      });
+      promise.finally(() => {
+        console.log('Message supprimé!');
+      });
     }
   }
 };
