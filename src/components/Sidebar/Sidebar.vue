@@ -69,7 +69,10 @@
 
         <div class="content">
           <div class="metadata">
-            <div class="title"><i class="ui small icon circle"> </i> {{ laconversation.title }}</div>
+            <div class="title">
+              <i class="ui small icon circle" v-if="usersAvailable.includes(laconversation.participants[0])"> </i>
+              {{ laconversation.title }}
+            </div>
 
             <div class="time" v-if="laconversation.lastMessage.posted_at != ''">
               {{ new Date(laconversation.lastMessage.posted_at).toLocaleTimeString() }}
