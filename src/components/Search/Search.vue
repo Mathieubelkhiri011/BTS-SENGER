@@ -3,35 +3,36 @@
     <div class="filter">
       <div class="ui fluid search">
         <div class="ui icon input">
-          <input
-            class="prompt"
-            type="text"
-            placeholder="Rechercher un message"
-          />
+          <input v-model="search" class="prompt" type="text" placeholder="Rechercher un message" />
           <i class="search icon"></i>
         </div>
         <div class="results"></div>
       </div>
     </div>
-    <div class="conversations">
-      <div class="conversation" v-for="x in 10" :key="x">
-        <div class="author">
-          <template v-if="x % 2">
-            <img src="https://source.unsplash.com/7YVZYZeITc8/100x100" />
-            <span>Bob</span>
-          </template>
-          <template v-else>
-            <div class="avatar">M</div>
-            <span>Groupe : METINET</span>
-          </template>
+    <div class="conversations" v-if="this.search.length > 0">
+      <div class="conversation" v-for="laconversation in FilterConversations" :key="laconversation.id">
+        <div
+          class="author"
+          v-if="
+            laconversation.search &&
+              laconversation.search.length > 0 &&
+              laconversation.messages.some(m => laconversation.search.includes(m))
+          "
+        >
+          <img
+            v-if="laconversation.type === 'one_to_one'"
+            :src="users.find(e => e.username === laconversation.title).picture_url"
+            class="avatar"
+          />
+          <img v-else src="https://clic-igeac.org/wp-content/uploads/2021/03/group-1824145_1280.png" class="avatar" />
         </div>
-        <div class="messages" v-for="y in 3" :key="y">
+        <div class="messages" v-for="message in laconversation.search" :key="message.id">
           <div class="message">
-            <div class="time">14/07/2020 13:37</div>
+            <div class="time" v-if="laconversation.lastMessage.posted_at != ''">
+              {{ new Date(laconversation.lastMessage.posted_at).toLocaleTimeString() }}
+            </div>
             <div class="bubble">
-              Blah blah blah blah blah blah blah blah blah blah blah blah blah
-              blah blah blah blah blah blah blah blah blah blah blah blah blah
-              blah
+              {{ message.content }}
             </div>
           </div>
         </div>
@@ -41,8 +42,54 @@
 </template>
 
 <script>
+import router from '@/router';
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
-  name: "Search"
+  name: 'Search',
+
+  data() {
+    return {
+      usernameUserConnecte: localStorage.getItem('username'),
+      search: '',
+      conversationIsActive: ''
+    };
+  },
+  methods: {
+    ...mapActions(['deauthenticate']),
+    print() {
+      console.log('conversation: ', this.conversations);
+    },
+    openCommunity() {
+      router.push({ name: 'Community' });
+    },
+    openMessageSearch() {
+      router.push({ name: 'Search' });
+    },
+
+    openGroupeProjet() {
+      router.push({ name: 'openGroupeProjet' });
+    }
+  },
+  computed: {
+    ...mapGetters(['user', 'users', 'conversations', 'conversation', 'messages']),
+    FilterConversations() {
+      let FilterConversations = [];
+
+      FilterConversations = this.conversations.map(conversation => ({
+        ...conversation,
+        search: conversation.messages.filter(
+          m => m.content && m.content.toLowerCase().includes(this.search.toLowerCase())
+        )
+      }));
+
+      console.log(FilterConversations.map(m => ({ print: m.search })));
+
+      return FilterConversations.sort(function(a, b) {
+        return new Date(b.lastMessage.posted_at) - new Date(a.lastMessage.posted_at);
+      });
+    }
+  }
 };
 </script>
 

@@ -10,7 +10,7 @@
 
         <div class="user-info-status ui simple dropdown">
           <div class="available text">
-            En lig
+            En ligne
           </div>
           <i class="dropdown icon"> </i>
           <div class="menu">
