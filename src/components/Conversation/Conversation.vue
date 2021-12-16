@@ -266,7 +266,7 @@ export default {
       });
     },
     replyToMsg(msg) {
-      this.message.replyTo = { msg };
+      this.message.replyTo = { ...msg };
     }
   },
   watch: {
