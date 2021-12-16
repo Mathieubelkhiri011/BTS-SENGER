@@ -233,6 +233,19 @@ export default new Vuex.Store({
       });
     },
 
+    reactMessage({ commit }, { conversation, message, reaction }) {
+      console.log('conversation : ', conversation.id);
+      console.log('message : ', message.id);
+      console.log('reaction : ', reaction);
+      const promise = Vue.prototype.$client.reactMessage(conversation.id, message.id, reaction);
+      console.log('promise : ', promise);
+      promise.then(({ message }) => {
+        commit('upsertMessages', {
+          message
+        });
+      });
+    },
+
     replyMessage({ commit }, { conversation, messageId, content }) {
       const promise = Vue.prototype.$client.replyMessage(conversation.id, messageId, content);
       promise.then(({ message }) => {

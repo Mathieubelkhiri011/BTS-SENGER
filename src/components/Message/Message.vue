@@ -7,7 +7,11 @@
         {{ message.content }}
       </div>
       <div v-else class="bubble top bottom">{{ message.content }}</div>
-      <div class="reacts"></div>
+      <div class="reacts">
+        <div v-for="(values, reaction) in countReaction" :key="reaction">
+          <i v-if="values >= 1" :class="'circular ' + EmoteReaction(reaction) + ' outline icon'">{{ values }}</i>
+        </div>
+      </div>
       <div class="controls">
         <i title="Supprimer" class="circular trash icon"></i>
         <i
@@ -29,7 +33,11 @@
         {{ message.content }}
       </div>
       <div v-else class="bubble top bottom">{{ message.content }}</div>
-      <div class="reacts"></div>
+      <div class="reacts">
+        <div v-for="(values, reaction) in countReaction" :key="reaction">
+          <i v-if="values >= 1" :class="'circular ' + EmoteReaction(reaction) + ' outline icon'">{{ values }}</i>
+        </div>
+      </div>
       <div class="controls">
         <i
           title="Répondre"
@@ -37,10 +45,10 @@
           @click="$emit('onReply', { id: message.id, from: message.from, content: message.content })"
         ></i
         ><span class="react"
-          ><i title="Aimer" class="circular heart outline icon"></i
-          ><i title="Pouce en l'air" class="circular thumbs up outline icon"></i
-          ><i title="Content" class="circular smile outline icon"></i
-          ><i title="Pas content" class="circular frown outline icon"></i
+          ><i title="Aimer" class="circular heart outline icon" @click="addReaction('HEART')"></i
+          ><i title="Pouce en l'air" class="circular thumbs up outline icon" @click="addReaction('THUMB')"></i
+          ><i title="Content" class="circular smile outline icon" @click="addReaction('HAPPY')"></i
+          ><i title="Pas content" class="circular frown outline icon" @click="addReaction('SAD')"></i
         ></span>
       </div>
     </div>
@@ -48,7 +56,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'Message',
@@ -59,7 +67,55 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['user', 'users'])
+    ...mapGetters(['user', 'users', 'conversation']),
+    countReaction() {
+      let HEART = 0;
+      let THUMB = 0;
+      let HAPPY = 0;
+      let SAD = 0;
+      for (var react of Object.values(this.message.reactions)) {
+        if (react === 'HEART') {
+          HEART++;
+        } else if (react === 'THUMB') {
+          THUMB++;
+        } else if (react === 'HAPPY') {
+          HAPPY++;
+        } else {
+          SAD++;
+        }
+      }
+      return { HEART, THUMB, HAPPY, SAD };
+    }
+  },
+  methods: {
+    ...mapActions(['reactMessage']),
+    print() {
+      console.log('reacts : ', this.message.reactions);
+    },
+    addReaction(valueReact) {
+      console.log(valueReact);
+      let promise = this.reactMessage({
+        conversation: this.conversation,
+        message: this.message,
+        reaction: valueReact
+      });
+      promise.finally(() => {
+        console.log('Réaction ajoutée !');
+      });
+    },
+
+    EmoteReaction(reaction) {
+      switch (reaction) {
+        default:
+          return 'heart';
+        case 'THUMB':
+          return 'thumbs up';
+        case 'HAPPY':
+          return 'smile';
+        case 'SAD':
+          return 'frown';
+      }
+    }
   }
 };
 </script>
