@@ -9,8 +9,17 @@
       <div v-else class="bubble top bottom">{{ message.content }}</div>
       <div class="reacts"></div>
       <div class="controls">
-        <i title="Supprimer" class="circular trash icon"></i><i title="Editer" class="circular edit icon"></i
-        ><i title="Répondre" class="circular reply icon"></i>
+        <i title="Supprimer" class="circular trash icon"></i>
+        <i
+          title="Editer"
+          class="circular edit icon"
+          @click="$emit('onEdit', { id: message.id, content: message.content })"
+        ></i
+        ><i
+          title="Répondre"
+          class="circular reply icon"
+          @click="$emit('onReply', { id: message.id, from: message.from, content: message.content })"
+        ></i>
       </div>
     </div>
     <div v-else class="message">
@@ -46,8 +55,7 @@ export default {
   props: ['message'],
   data() {
     return {
-      groupPanel: false,
-      monMessage: ''
+      groupPanel: false
     };
   },
   computed: {
