@@ -51,7 +51,7 @@
           @click="$emit('onReply', { id: message.id, from: message.from, content: message.content })"
         ></i
         ><span class="react"
-          ><i title="Aimer" class="circular heart outline icon" @click="print()"></i
+          ><i title="Aimer" class="circular heart outline icon" @click="addReaction('HEART')"></i
           ><i title="Pouce en l'air" class="circular thumbs up outline icon" @click="addReaction('THUMB')"></i
           ><i title="Content" class="circular smile outline icon" @click="addReaction('HAPPY')"></i
           ><i title="Pas content" class="circular frown outline icon" @click="addReaction('SAD')"></i
