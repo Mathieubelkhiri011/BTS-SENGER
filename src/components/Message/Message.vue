@@ -1,12 +1,14 @@
 <template>
   <div>
-    <div class="time">{{ new Date(message.posted_at).toLocaleTimeString() }}</div>
+    <div class="time" v-if="index === 0 || conversation.messages[index - 1].from !== message.from">
+      {{ new Date(message.posted_at).toLocaleTimeString() }}
+    </div>
     <div v-if="message.from === this.user.username" class="message mine">
-      <div v-if="message.reply_to" class="bubble middle">
+      <div v-if="message.reply_to" :class="'bubble ' + position">
         <p class="reply_content">{{ message.reply_to.content }}</p>
         {{ message.content }}
       </div>
-      <div v-else class="bubble top bottom">{{ message.content }}</div>
+      <div v-else :class="'bubble ' + position">{{ message.content }}</div>
       <div class="reacts">
         <div v-for="(values, reaction) in countReaction" :key="reaction">
           <i v-if="values >= 1" :class="'circular ' + EmoteReaction(reaction) + ' outline icon'">{{ values }}</i>
@@ -18,12 +20,16 @@
       </div>
     </div>
     <div v-else class="message">
-      <img title="Bob" :src="users.find(e => e.username === message.from).picture_url" />
-      <div v-if="message.reply_to" class="bubble middle">
+      <img
+        title="Bob"
+        v-if="index === conversation.messages.length - 1 || conversation.messages[index + 1].from !== message.from"
+        :src="users.find(e => e.username === message.from).picture_url"
+      />
+      <div v-if="message.reply_to" :class="'bubble ' + position">
         <p class="reply_content">{{ message.reply_to.content }}</p>
         {{ message.content }}
       </div>
-      <div v-else class="bubble top bottom">{{ message.content }}</div>
+      <div v-else :class="'bubble ' + position">{{ message.content }}</div>
       <div class="reacts">
         <div v-for="(values, reaction) in countReaction" :key="reaction">
           <i v-if="values >= 1" :class="'circular ' + EmoteReaction(reaction) + ' outline icon'">{{ values }}</i>
@@ -36,7 +42,7 @@
           @click="$emit('onReply', { id: message.id, from: message.from, content: message.content })"
         ></i
         ><span class="react"
-          ><i title="Aimer" class="circular heart outline icon" @click="addReaction('HEART')"></i
+          ><i title="Aimer" class="circular heart outline icon" @click="print()"></i
           ><i title="Pouce en l'air" class="circular thumbs up outline icon" @click="addReaction('THUMB')"></i
           ><i title="Content" class="circular smile outline icon" @click="addReaction('HAPPY')"></i
           ><i title="Pas content" class="circular frown outline icon" @click="addReaction('SAD')"></i
@@ -51,7 +57,7 @@ import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'Message',
-  props: ['message'],
+  props: ['message', 'position', 'index', 'conversation'],
   data() {
     return {
       groupPanel: false,
@@ -59,7 +65,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['user', 'users', 'conversation']),
+    ...mapGetters(['user', 'users']), //, 'conversation'
     countReaction() {
       let HEART = 0;
       let THUMB = 0;
@@ -81,8 +87,11 @@ export default {
   },
   methods: {
     ...mapActions(['reactMessage']),
-    print() {
-      console.log('reacts : ', this.message.reactions);
+    print(conversation, messages, index, message) {
+      console.log('conversation  : ', conversation);
+      console.log('messages  : ', messages);
+      console.log('index  : ', index);
+      console.log('message  : ', message);
     },
     addReaction(valueReact) {
       console.log(valueReact);

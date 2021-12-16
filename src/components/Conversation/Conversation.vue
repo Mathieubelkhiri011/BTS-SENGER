@@ -150,8 +150,15 @@
               </div>
             </div>
 
-            <div v-for="message in this.conversation.messages" :key="message.id">
-              <Message :message="message" @onReply="replyToMsg"> </Message>
+            <div v-for="(message, index) in this.conversation.messages" :key="message.id">
+              <Message
+                :position="positionmessage(conversation.messages, index)"
+                :index="index"
+                :conversation="conversation"
+                :message="message"
+                @onReply="replyToMsg"
+              >
+              </Message>
             </div>
             <div class="view">
               <img title="Vu par Alice à 01:36:39" src="https://source.unsplash.com/mK_sjD0FrXw/100x100" /><img
@@ -170,7 +177,7 @@
         <div class="conversation-footer">
           <div class="wrapper">
             <p v-if="this.message.replyTo.id !== -1">
-              <i title="Abandonner" class="circular times small icon link" @click="print"></i>
+              <i title="Abandonner" class="circular times small icon link" @click="print()"></i>
               Répondre à {{ this.message.replyTo.from }} :
               <span>
                 {{ this.message.replyTo.content }}
@@ -228,9 +235,7 @@ export default {
   },
   methods: {
     ...mapActions(['postMessage', 'replyMessage']),
-    print() {
-      console.log('la conv', this.conversation);
-    },
+    print() {},
     scrollBottom() {
       setTimeout(() => {
         let scrollElement = document.querySelector('#scroll');
@@ -238,6 +243,39 @@ export default {
           scrollElement.scrollTop = document.querySelector('#scroll').scrollHeight;
         }
       }, 0);
+    },
+    positionmessage(message, index) {
+      if (message != null && index != null && message.length > 0 && message.length >= index) {
+        let messagePrecedent = this.conversation.messages.filter((message, indexMessage) => indexMessage === index - 1);
+
+        if (messagePrecedent.length) {
+          messagePrecedent = messagePrecedent[0];
+        }
+
+        let messagesuivance = this.conversation.messages.filter((message, indexMessage) => indexMessage === index + 1);
+
+        if (messagesuivance.length) {
+          messagesuivance = messagesuivance[0];
+        }
+
+        let messageActuel = this.conversation.messages.filter((message, indexMessage) => indexMessage === index)[0];
+
+        if (
+          messagePrecedent &&
+          messagesuivance &&
+          messageActuel &&
+          messagePrecedent.from === messageActuel.from &&
+          messagesuivance.from === messageActuel.from
+        ) {
+          return 'middle';
+        } else if (messagePrecedent && messageActuel && messagePrecedent.from === messageActuel.from) {
+          return 'bottom';
+        } else if (messagesuivance && messageActuel && messagesuivance.from === messageActuel.from) {
+          return 'top';
+        } else {
+          return 'top bottom';
+        }
+      }
     },
     sendMessage() {
       console.log('message: ', this.message.content);
