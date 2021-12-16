@@ -67,7 +67,7 @@ export default {
       } else {
         promise = this.createOneToOneConversation(this.selectedUsers[0].username);
       }
-      console.log(promise);
+
       promise.finally(() => {
         console.log('Conversation ouverte !');
       });
