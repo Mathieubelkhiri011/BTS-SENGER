@@ -68,7 +68,7 @@ export default {
       FilterUsers = this.users.filter(
         user => !this.conversation.participants.find(element => element === user.username)
       );
-      return FilterUsers.filter(user => user.username.toLowerCase().includes(this.search.toLowerCase()));
+      return FilterUsers;
     }
   },
   methods: {

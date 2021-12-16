@@ -93,13 +93,12 @@ export default new Vuex.Store({
         Vue.set(state.conversations, localConversationIndex, conversation);
       } else {
         state.conversations.push({
-          ...conversation,
-          titre: 'toto'
+          ...conversation
         });
       }
     },
 
-    upsertMessage(state, { conversation_id, message }) {
+    upsertMessages(state, { conversation_id, message }) {
       const localConversationIndex = state.conversations.findIndex(
         _conversation => _conversation.id === conversation_id
       );
@@ -229,6 +228,20 @@ export default new Vuex.Store({
         });
       });
     },
+
+    reactMessage({ commit }, { conversation, message, reaction }) {
+      console.log('conversation : ', conversation.id);
+      console.log('message : ', message.id);
+      console.log('reaction : ', reaction);
+      const promise = Vue.prototype.$client.reactMessage(conversation.id, message.id, reaction);
+      console.log('promise : ', promise);
+      promise.then(({ message }) => {
+        commit('upsertMessages', {
+          message
+        });
+      });
+    },
+
     replyMessage({ commit }, { conversation, messageId, content }) {
       console.log('content ', content);
       const promise = Vue.prototype.$client.replyMessage(conversation.id, messageId, content);

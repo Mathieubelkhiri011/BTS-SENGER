@@ -40,7 +40,7 @@ export default function install(Vue, store) {
   });
 
   client.on('messagePosted', async ({ conversation_id, message }) => {
-    store.commit('upsertMessage', { conversation_id, message });
+    store.commit('upsertMessages', { conversation_id, message });
   });
 
   client.on('messageDelivered', async ({ conversation_id, message }) => {
@@ -52,7 +52,7 @@ export default function install(Vue, store) {
   });
 
   client.on('messageReacted', async ({ conversation_id, message }) => {
-    //TODO
+    store.commit('upsertMessages', { conversation_id, message });
   });
 
   client.on('messageEdited', async ({ conversation_id, message }) => {

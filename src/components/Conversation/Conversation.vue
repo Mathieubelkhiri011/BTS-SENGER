@@ -83,9 +83,7 @@
             <div class="message">
               <img title="Bob" src="https://source.unsplash.com/7omHUGhhmZ0/100x100" />
               <div class="bubble bottom">Ou bien y réagir</div>
-              <div class="reacts">
-                <i title="Aimer" class="circular heart outline icon">1</i>
-              </div>
+              <div class="reacts"></div>
               <div class="controls">
                 <i title="Répondre" class="circular reply icon"></i
                 ><span class="react"
