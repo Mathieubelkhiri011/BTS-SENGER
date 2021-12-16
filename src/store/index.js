@@ -107,15 +107,41 @@ export default new Vuex.Store({
       const localConversationIndex = state.conversations.findIndex(
         _conversation => _conversation.id === conversation_id
       );
+      console.log('TEST', conversation_id, message);
       if (localConversationIndex !== -1) {
+        let message_id = message.id;
+        //console.log('upsertMsg tetetetete', message_id);
         const localMessageIndex = state.conversations[localConversationIndex].messages.findIndex(
-          _message => _message.id === message.id
+          _message => _message.id === message_id
         );
         if (localMessageIndex !== -1) {
           Vue.set(state.conversations[localConversationIndex].messages, localMessageIndex, message);
         } else {
           state.conversations[localConversationIndex].messages.push({
             ...message
+          });
+        }
+        state.conversations[localConversationIndex].updated_at = new Date().toISOString();
+      }
+    },
+    upsertMessageDeleted(state, { conversation_id, message_id }) {
+      const localConversationIndex = state.conversations.findIndex(
+        _conversation => _conversation.id === conversation_id
+      );
+      console.log('TEST', conversation_id, message_id);
+      if (localConversationIndex !== -1) {
+        //console.log('upsertMsg tetetetete', message_id);
+        const localMessageIndex = state.conversations[localConversationIndex].messages.findIndex(
+          _message => _message.id === message_id
+        );
+        if (localMessageIndex !== -1) {
+          const message = state.conversations[localConversationIndex].messages.find(
+            _message => _message.id === message_id
+          );
+
+          Vue.set(state.conversations[localConversationIndex].messages, localMessageIndex, {
+            ...message,
+            deleted: true
           });
         }
         state.conversations[localConversationIndex].updated_at = new Date().toISOString();
@@ -202,10 +228,8 @@ export default new Vuex.Store({
       return promise;
     },
     postMessage({ commit }, { conversation, content }) {
-      console.log('content ', content);
       const promise = Vue.prototype.$client.postMessage(conversation.id, content);
 
-      console.log('promise postMessage', promise);
       promise.then(({ message }) => {
         commit('upsertMessages', {
           conversation_id: conversation.id,
@@ -248,16 +272,19 @@ export default new Vuex.Store({
     },
 
     replyMessage({ commit }, { conversation, messageId, content }) {
-      console.log('content ', content);
       const promise = Vue.prototype.$client.replyMessage(conversation.id, messageId, content);
-
-      console.log('promiseReplyMessage', promise);
       promise.then(({ message }) => {
         commit('upsertMessages', {
           conversation_id: conversation.id,
           message: message
         });
       });
+    },
+    editMessage({ commit }, { conversation, messageId, content }) {
+      Vue.prototype.$client.editMessage(conversation.id, messageId, content);
+    },
+    deleteMessage({ commit }, { conversation, messageId }) {
+      Vue.prototype.$client.deleteMessage(conversation.id, messageId);
     }
   }
 });

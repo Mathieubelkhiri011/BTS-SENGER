@@ -157,6 +157,7 @@
                 :conversation="conversation"
                 :message="message"
                 @onReply="replyToMsg"
+                @onEdit="editMsg"
               >
               </Message>
             </div>
@@ -177,11 +178,15 @@
         <div class="conversation-footer">
           <div class="wrapper">
             <p v-if="this.message.replyTo.id !== -1">
-              <i title="Abandonner" class="circular times small icon link" @click="print()"></i>
+              <i title="Abandonner" class="circular times small icon link" @click="closeReply"></i>
               Répondre à {{ this.message.replyTo.from }} :
               <span>
                 {{ this.message.replyTo.content }}
               </span>
+            </p>
+            <p v-if="this.message.editMsg.id !== -1">
+              <i title="Abandonner" class="circular times small icon link" @click="closeEdit"></i>
+              Edition
             </p>
 
             <div class="ui fluid search">
@@ -220,7 +225,8 @@ export default {
       groupPanel: false,
       message: {
         content: '',
-        replyTo: { id: -1, from: '', content: '' }
+        replyTo: { id: -1, from: '', content: '' },
+        editMsg: { id: -1, content: '' }
       }
     };
   },
@@ -234,8 +240,10 @@ export default {
     ...mapGetters(['user', 'users', 'conversation', 'conversations', 'authenticating'])
   },
   methods: {
-    ...mapActions(['postMessage', 'replyMessage']),
-    print() {},
+    ...mapActions(['postMessage', 'replyMessage', 'editMessage']),
+    print() {
+      console.log('la conv', this.conversation);
+    },
     scrollBottom() {
       setTimeout(() => {
         let scrollElement = document.querySelector('#scroll');
@@ -280,18 +288,25 @@ export default {
     sendMessage() {
       console.log('message: ', this.message.content);
       let promise;
-      if (this.message.replyTo.id === -1) {
-        console.log('message normal');
-        //message normal
-        promise = this.postMessage({
-          conversation: this.conversation,
-          content: this.message.content
-        });
-      } else {
+      if (this.message.replyTo.id !== -1) {
         console.log('message a reply');
         promise = this.replyMessage({
           conversation: this.conversation,
           messageId: this.message.replyTo.id,
+          content: this.message.content
+        });
+      } else if (this.message.editMsg.id !== -1) {
+        console.log('message editer');
+        promise = this.editMessage({
+          conversation: this.conversation,
+          messageId: this.message.editMsg.id,
+          content: this.message.content
+        });
+      } else {
+        console.log('message normal');
+        //message normal
+        promise = this.postMessage({
+          conversation: this.conversation,
           content: this.message.content
         });
       }
@@ -299,12 +314,24 @@ export default {
       promise.finally(() => {
         this.message = {
           content: '',
-          replyTo: { id: -1, from: '', content: '' }
+          replyTo: { id: -1, from: '', content: '' },
+          editMsg: { id: -1, content: '' }
         };
       });
     },
     replyToMsg(msg) {
       this.message.replyTo = { ...msg };
+    },
+    closeReply() {
+      this.message.replyTo = { id: -1, from: '', content: '' };
+    },
+    editMsg(msg) {
+      this.message.editMsg = { ...msg };
+      this.message.content = msg.content;
+    },
+    closeEdit() {
+      this.message.editMsg = { id: -1, content: '' };
+      this.message.content = '';
     }
   },
   watch: {

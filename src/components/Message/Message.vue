@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!message.deleted">
     <div class="time" v-if="index === 0 || conversation.messages[index - 1].from !== message.from">
       {{ new Date(message.posted_at).toLocaleTimeString() }}
     </div>
@@ -15,8 +15,17 @@
         </div>
       </div>
       <div class="controls">
-        <i title="Supprimer" class="circular trash icon" @click="print()"></i
-        ><i title="Editer" class="circular edit icon"></i><i title="Répondre" class="circular reply icon"></i>
+        <i title="Supprimer" class="circular trash icon" @click="deleteMsg()"></i>
+        <i
+          title="Editer"
+          class="circular edit icon"
+          @click="$emit('onEdit', { id: message.id, content: message.content })"
+        ></i
+        ><i
+          title="Répondre"
+          class="circular reply icon"
+          @click="$emit('onReply', { id: message.id, from: message.from, content: message.content })"
+        ></i>
       </div>
     </div>
     <div v-else class="message">
@@ -50,6 +59,11 @@
       </div>
     </div>
   </div>
+  <div v-else class="message " :class="message.from === user.username ? 'mine' : ''" @click="print(message)">
+    <div class="bubble bubble-deleted top bottom">
+      Message supprimé
+    </div>
+  </div>
 </template>
 
 <script>
@@ -60,8 +74,7 @@ export default {
   props: ['message', 'position', 'index', 'conversation'],
   data() {
     return {
-      groupPanel: false,
-      monMessage: ''
+      groupPanel: false
     };
   },
   computed: {
@@ -86,12 +99,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['reactMessage']),
-    print(conversation, messages, index, message) {
-      console.log('conversation  : ', conversation);
-      console.log('messages  : ', messages);
-      console.log('index  : ', index);
-      console.log('message  : ', message);
+    ...mapActions(['reactMessage', 'deleteMessage']),
+    print(message) {
+      console.log('message : ', message);
     },
     addReaction(valueReact) {
       console.log(valueReact);
@@ -116,6 +126,15 @@ export default {
         case 'SAD':
           return 'frown';
       }
+    },
+    deleteMsg() {
+      let promise = this.deleteMessage({
+        conversation: this.conversation,
+        messageId: this.message.id
+      });
+      promise.finally(() => {
+        console.log('Message supprimé!');
+      });
     }
   }
 };
