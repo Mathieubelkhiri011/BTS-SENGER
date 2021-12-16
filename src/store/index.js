@@ -38,8 +38,13 @@ export default new Vuex.Store({
         let participantToTitle = conversation.participants.filter(item => item !== state.user.username);
         return {
           ...conversation,
-          title: participantToTitle.join(', ')
-          //TODO
+          title: participantToTitle.join(', '),
+          lastMessage: {
+            posted_at:
+              conversation.messages.length > 0 ? conversation.messages[conversation.messages.length - 1].posted_at : '',
+            content:
+              conversation.messages.length > 0 ? conversation.messages[conversation.messages.length - 1].content : ''
+          }
         };
       });
     },
@@ -202,9 +207,9 @@ export default new Vuex.Store({
 
       console.log('promise postMessage', promise);
       promise.then(({ message }) => {
-        conversation.messages.push(message);
-        commit('upsertConversation', {
-          conversation
+        commit('upsertMessages', {
+          conversation_id: conversation.id,
+          message: message
         });
       });
     },
@@ -248,9 +253,9 @@ export default new Vuex.Store({
 
       console.log('promiseReplyMessage', promise);
       promise.then(({ message }) => {
-        conversation.messages.push(message);
-        commit('upsertConversation', {
-          conversation
+        commit('upsertMessages', {
+          conversation_id: conversation.id,
+          message: message
         });
       });
     }
