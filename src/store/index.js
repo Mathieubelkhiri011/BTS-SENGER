@@ -107,8 +107,10 @@ export default new Vuex.Store({
       const localConversationIndex = state.conversations.findIndex(
         _conversation => _conversation.id === conversation_id
       );
-      let message_id = message.id;
+      console.log('TEST', conversation_id, message);
       if (localConversationIndex !== -1) {
+        let message_id = message.id;
+        //console.log('upsertMsg tetetetete', message_id);
         const localMessageIndex = state.conversations[localConversationIndex].messages.findIndex(
           _message => _message.id === message_id
         );
@@ -117,6 +119,29 @@ export default new Vuex.Store({
         } else {
           state.conversations[localConversationIndex].messages.push({
             ...message
+          });
+        }
+        state.conversations[localConversationIndex].updated_at = new Date().toISOString();
+      }
+    },
+    upsertMessageDeleted(state, { conversation_id, message_id }) {
+      const localConversationIndex = state.conversations.findIndex(
+        _conversation => _conversation.id === conversation_id
+      );
+      console.log('TEST', conversation_id, message_id);
+      if (localConversationIndex !== -1) {
+        //console.log('upsertMsg tetetetete', message_id);
+        const localMessageIndex = state.conversations[localConversationIndex].messages.findIndex(
+          _message => _message.id === message_id
+        );
+        if (localMessageIndex !== -1) {
+          const message = state.conversations[localConversationIndex].messages.find(
+            _message => _message.id === message_id
+          );
+
+          Vue.set(state.conversations[localConversationIndex].messages, localMessageIndex, {
+            ...message,
+            deleted: true
           });
         }
         state.conversations[localConversationIndex].updated_at = new Date().toISOString();
@@ -257,6 +282,9 @@ export default new Vuex.Store({
     },
     editMessage({ commit }, { conversation, messageId, content }) {
       Vue.prototype.$client.editMessage(conversation.id, messageId, content);
+    },
+    deleteMessage({ commit }, { conversation, messageId }) {
+      Vue.prototype.$client.deleteMessage(conversation.id, messageId);
     }
   }
 });
