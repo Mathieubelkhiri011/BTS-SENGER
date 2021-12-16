@@ -4,7 +4,7 @@
       <img
         v-if="this.conversation.type === 'one_to_one'"
         class="avatar"
-        :src="this.users.find(e => e.username === this.conversation.participants[0]).picture_url"
+        :src="this.users.find(e => e.username === this.conversation.title).picture_url"
       />
       <div v-else class="avatar">
         <i class="ui users icon"></i>

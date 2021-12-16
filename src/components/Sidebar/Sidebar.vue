@@ -10,7 +10,7 @@
 
         <div class="user-info-status ui simple dropdown">
           <div class="available text">
-            En lig
+            En ligne
           </div>
           <i class="dropdown icon"> </i>
           <div class="menu">
@@ -29,7 +29,7 @@
         <br />
         <span>Communauté</span>
       </div>
-      <div v-if="true" class="blue button" @click="print()">
+      <div v-if="true" class="blue button" @click="openMessageSearch">
         <i class="search icon"> </i>
         <br />
         <span>Messages</span>
@@ -59,7 +59,7 @@
       >
         <img
           v-if="laconversation.type === 'one_to_one'"
-          :src="users.find(e => e.username === laconversation.participants[0]).picture_url"
+          :src="users.find(e => e.username === laconversation.title).picture_url"
           class="avatar"
         />
         <img v-else src="https://clic-igeac.org/wp-content/uploads/2021/03/group-1824145_1280.png" class="avatar" />
