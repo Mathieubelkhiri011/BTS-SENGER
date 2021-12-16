@@ -12,7 +12,7 @@
 
       <div class="title">
         <div class="ui compact">
-          <i class="icon circle"></i>
+          <i class="icon circle" v-if="isOnline"></i>
           <span>{{ this.conversation.title.substring(0, 40) }}</span>
 
           <span v-if="this.conversation.title.length > 40">...</span>
@@ -237,7 +237,11 @@ export default {
     this.scrollBottom();
   },
   computed: {
-    ...mapGetters(['user', 'users', 'conversation', 'conversations', 'authenticating'])
+    ...mapGetters(['user', 'users', 'conversation', 'conversations', 'authenticating', 'usersAvailable']),
+
+    isOnline() {
+      return this.usersAvailable.some(x => this.conversation.participants.includes(x) && x != this.user.username);
+    }
   },
   methods: {
     ...mapActions(['postMessage', 'replyMessage', 'editMessage']),
