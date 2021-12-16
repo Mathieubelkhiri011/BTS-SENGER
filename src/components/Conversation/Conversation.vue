@@ -4,7 +4,7 @@
       <img
         v-if="this.conversation.type === 'one_to_one'"
         class="avatar"
-        :src="this.users.find(e => e.username === this.conversation.participants[0]).picture_url"
+        :src="pictureOfUser(this.conversation.title)"
       />
       <div v-else class="avatar">
         <i class="ui users icon"></i>
@@ -160,12 +160,13 @@
                 @onEdit="editMsg"
               >
               </Message>
-            </div>
-            <div class="view">
-              <img title="Vu par Alice à 01:36:39" src="https://source.unsplash.com/mK_sjD0FrXw/100x100" /><img
-                title="Vu par Gael à 01:36:39"
-                src="https://source.unsplash.com/OYH7rc2a3LA/100x100"
-              />
+              <div v-for="participant in conversation.participants" :key="participant" class="view">
+                <img
+                  v-if="conversation.seen[participant].message_id === message.id"
+                  :title="'Vu par ' + participant + ' à ' + new Date(message.posted_at).toLocaleTimeString()"
+                  :src="pictureOfUser(participant)"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -251,6 +252,9 @@ export default {
           scrollElement.scrollTop = document.querySelector('#scroll').scrollHeight;
         }
       }, 0);
+    },
+    pictureOfUser(username) {
+      return this.users.find(e => e.username === username).picture_url;
     },
     positionmessage(message, index) {
       if (message != null && index != null && message.length > 0 && message.length >= index) {

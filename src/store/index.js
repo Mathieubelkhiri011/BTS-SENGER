@@ -285,6 +285,9 @@ export default new Vuex.Store({
     },
     deleteMessage({ commit }, { conversation, messageId }) {
       Vue.prototype.$client.deleteMessage(conversation.id, messageId);
+    },
+    seeConversation({ commit }, { conversation, messageId }) {
+      Vue.prototype.$client.seeConversation(conversation.id, messageId);
     }
   }
 });
