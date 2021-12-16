@@ -54,12 +54,15 @@
         class="conversation"
         v-for="laconversation in FilterConversations"
         :key="laconversation.id"
-        :class="{ selected: laconversation.id === conversationIsActive }"
+        :class="{
+          selected: laconversation.id === conversationIsActive,
+          available: usersAvailable.includes(laconversation.participants[0])
+        }"
         @click="openConversation(laconversation.id)"
       >
         <img
           v-if="laconversation.type === 'one_to_one'"
-          :src="users.find(e => e.username === laconversation.title).picture_url"
+          :src="users.find(e => laconversation.participants.includes(e.username)).picture_url"
           class="avatar"
         />
         <img v-else src="https://clic-igeac.org/wp-content/uploads/2021/03/group-1824145_1280.png" class="avatar" />
@@ -139,7 +142,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['user', 'users', 'conversations', 'conversation']),
+    ...mapGetters(['user', 'users', 'conversations', 'conversation', 'usersAvailable']),
     FilterConversations() {
       let FilterConversations = [];
       FilterConversations = this.conversations.map(conversation => ({
