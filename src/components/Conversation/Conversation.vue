@@ -160,12 +160,14 @@
                 @onEdit="editMsg"
               >
               </Message>
-              <div v-for="participant in conversation.participants" :key="participant" class="view">
-                <img
-                  v-if="conversation.seen[participant].message_id === message.id"
-                  :title="'Vu par ' + participant + ' à ' + new Date(message.posted_at).toLocaleTimeString()"
-                  :src="pictureOfUser(participant)"
-                />
+              <div class="view">
+                <span v-for="participant in conversation.participants" :key="participant">
+                  <img
+                    v-if="conversation.seen[participant].message_id === message.id"
+                    :title="'Vu par ' + participant + ' à ' + new Date(message.posted_at).toLocaleTimeString()"
+                    :src="pictureOfUser(participant)"
+                  />
+                </span>
               </div>
             </div>
           </div>
@@ -233,6 +235,7 @@ export default {
   },
   mounted() {
     this.scrollBottom();
+    this.conversationSeen();
   },
   updated() {
     this.scrollBottom();
@@ -241,7 +244,7 @@ export default {
     ...mapGetters(['user', 'users', 'conversation', 'conversations', 'authenticating'])
   },
   methods: {
-    ...mapActions(['postMessage', 'replyMessage', 'editMessage']),
+    ...mapActions(['postMessage', 'replyMessage', 'editMessage', 'seeConversation']),
     print() {
       console.log('la conv', this.conversation);
     },
@@ -336,6 +339,15 @@ export default {
     closeEdit() {
       this.message.editMsg = { id: -1, content: '' };
       this.message.content = '';
+    },
+    conversationSeen() {
+      let promise = this.seeConversation({
+        conversationId: this.conversation.id,
+        messageId: this.conversation.messages[this.conversation.messages.length - 1].id
+      });
+      promise.finally(() => {
+        console.log('Conversation seen!');
+      });
     }
   },
   watch: {

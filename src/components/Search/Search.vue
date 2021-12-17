@@ -3,11 +3,7 @@
     <div class="filter">
       <div class="ui fluid search">
         <div class="ui icon input">
-          <input
-            class="prompt"
-            type="text"
-            placeholder="Rechercher un message"
-          />
+          <input class="prompt" type="text" placeholder="Rechercher un message" />
           <i class="search icon"></i>
         </div>
         <div class="results"></div>
@@ -29,9 +25,8 @@
           <div class="message">
             <div class="time">14/07/2020 13:37</div>
             <div class="bubble">
-              Blah blah blah blah blah blah blah blah blah blah blah blah blah
-              blah blah blah blah blah blah blah blah blah blah blah blah blah
-              blah
+              Blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah
+              blah blah blah blah blah blah
             </div>
           </div>
         </div>
@@ -42,7 +37,7 @@
 
 <script>
 export default {
-  name: "Search"
+  name: 'Search'
 };
 </script>
 

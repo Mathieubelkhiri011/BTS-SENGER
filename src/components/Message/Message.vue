@@ -99,12 +99,9 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['reactMessage', 'deleteMessage']),
-    print(message) {
-      console.log('message : ', message);
-    },
+    ...mapActions(['reactMessage', 'deleteMessage', 'seeConversation']),
     addReaction(valueReact) {
-      console.log(valueReact);
+      this.conversationSeen();
       let promise = this.reactMessage({
         conversation: this.conversation,
         message: this.message,
@@ -128,12 +125,22 @@ export default {
       }
     },
     deleteMsg() {
+      this.conversationSeen();
       let promise = this.deleteMessage({
         conversation: this.conversation,
         messageId: this.message.id
       });
       promise.finally(() => {
         console.log('Message supprimé!');
+      });
+    },
+    conversationSeen() {
+      let promise = this.seeConversation({
+        conversationId: this.conversation.id,
+        messageId: this.conversation.messages[this.conversation.messages.length - 1].id
+      });
+      promise.finally(() => {
+        console.log('Conversation seen!');
       });
     }
   }

@@ -120,7 +120,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['deauthenticate']),
+    ...mapActions(['deauthenticate'], ['seeConversation']),
     print() {
       console.log('conversation: ', this.conversations);
     },
