@@ -33,11 +33,15 @@ export default new Vuex.Store({
         //TODO
       }));
     },
+    usersAvailable(state) {
+      return state.usersAvailable;
+    },
     conversations(state) {
       return state.conversations.map(conversation => {
         let participantToTitle = conversation.participants.filter(item => item !== state.user.username);
         return {
           ...conversation,
+          available: state.usersAvailable.includes(conversation.participants.username),
           title: participantToTitle.join(', '),
           lastMessage: {
             posted_at:
@@ -87,6 +91,11 @@ export default new Vuex.Store({
           ...user
         });
       }
+    },
+
+    upsertAvailableUsers(state, { usernames }) {
+      console.log({ usernames });
+      state.usersAvailable = usernames;
     },
 
     upsertConversation(state, { conversation }) {
@@ -259,11 +268,7 @@ export default new Vuex.Store({
     },
 
     reactMessage({ commit }, { conversation, message, reaction }) {
-      console.log('conversation : ', conversation.id);
-      console.log('message : ', message.id);
-      console.log('reaction : ', reaction);
       const promise = Vue.prototype.$client.reactMessage(conversation.id, message.id, reaction);
-      console.log('promise : ', promise);
       promise.then(({ message }) => {
         commit('upsertMessages', {
           message
@@ -280,9 +285,11 @@ export default new Vuex.Store({
         });
       });
     },
+
     editMessage({ commit }, { conversation, messageId, content }) {
       Vue.prototype.$client.editMessage(conversation.id, messageId, content);
     },
+
     deleteMessage({ commit }, { conversation, messageId }) {
       Vue.prototype.$client.deleteMessage(conversation.id, messageId);
     },

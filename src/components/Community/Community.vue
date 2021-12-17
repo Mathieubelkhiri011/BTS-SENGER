@@ -11,7 +11,7 @@
     </div>
     <div class="users">
       <div
-        :class="{ 'selected user': user.isSelected }"
+        v-bind:class="{ 'selected user': user.isSelected, available: usersAvailable.includes(user.username) }"
         class="user"
         v-for="user in FilterUsers"
         :key="user.username"
@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="actions">
-      <button class="ui primary big button" @click="openConversation">
+      <button class="ui primary big button" @click="print()">
         <i class="conversation icon"></i>
         <span v-if="libBtnConversation === ''">
           {{ 'Ouvrir la conversation (' + this.selectedUsers.length + ')' }}
@@ -59,6 +59,9 @@ export default {
         this.selectedUsers.push({ username: username });
       }
     },
+    print() {
+      console.log(this.users);
+    },
     openConversation() {
       this.libBtnConversation = 'Ouverture de la conversation en cours (' + this.selectedUsers.length + ')';
       let promise;
@@ -74,7 +77,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['users']),
+    ...mapGetters(['users', 'usersAvailable']),
     FilterUsers() {
       let FilterUsers = [];
       FilterUsers = this.users.map(user => ({
