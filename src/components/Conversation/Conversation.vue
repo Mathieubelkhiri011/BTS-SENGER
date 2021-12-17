@@ -4,7 +4,7 @@
       <img
         v-if="this.conversation.type === 'one_to_one'"
         class="avatar"
-        :src="this.users.find(e => e.username === this.conversation.title).picture_url"
+        :src="pictureOfUser(this.conversation.title)"
       />
       <div v-else class="avatar">
         <i class="ui users icon"></i>
@@ -60,12 +60,15 @@
                 @onEdit="editMsg"
               >
               </Message>
-            </div>
-            <div class="view">
-              <img title="Vu par Alice à 01:36:39" src="https://source.unsplash.com/mK_sjD0FrXw/100x100" /><img
-                title="Vu par Gael à 01:36:39"
-                src="https://source.unsplash.com/OYH7rc2a3LA/100x100"
-              />
+              <div class="view">
+                <span v-for="participant in conversation.participants" :key="participant">
+                  <img
+                    v-if="conversation.seen[participant].message_id === message.id"
+                    :title="'Vu par ' + participant + ' à ' + new Date(message.posted_at).toLocaleTimeString()"
+                    :src="pictureOfUser(participant)"
+                  />
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -132,6 +135,7 @@ export default {
   },
   mounted() {
     this.scrollBottom();
+    this.conversationSeen();
   },
   updated() {
     this.scrollBottom();
@@ -144,7 +148,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['postMessage', 'replyMessage', 'editMessage']),
+    ...mapActions(['postMessage', 'replyMessage', 'editMessage', 'seeConversation']),
     print() {
       console.log('la conv', this.conversation);
     },
@@ -155,6 +159,9 @@ export default {
           scrollElement.scrollTop = document.querySelector('#scroll').scrollHeight;
         }
       }, 0);
+    },
+    pictureOfUser(username) {
+      return this.users.find(e => e.username === username).picture_url;
     },
     positionmessage(message, index) {
       if (message != null && index != null && message.length > 0 && message.length >= index) {
@@ -236,6 +243,15 @@ export default {
     closeEdit() {
       this.message.editMsg = { id: -1, content: '' };
       this.message.content = '';
+    },
+    conversationSeen() {
+      let promise = this.seeConversation({
+        conversationId: this.conversation.id,
+        messageId: this.conversation.messages[this.conversation.messages.length - 1].id
+      });
+      promise.finally(() => {
+        console.log('Conversation seen!');
+      });
     }
   },
   watch: {
