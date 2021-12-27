@@ -12,7 +12,7 @@
 
       <div class="title">
         <div class="ui compact">
-          <i class="icon circle" :class="{ available: isOnline }"></i>
+          <i v-if="isOnline" class="icon circle available"></i>
           <span>{{ this.conversation.title.substring(0, 40) }}</span>
 
           <span v-if="this.conversation.title.length > 40">...</span>
@@ -149,9 +149,6 @@ export default {
   },
   methods: {
     ...mapActions(['postMessage', 'replyMessage', 'editMessage', 'seeConversation']),
-    print() {
-      console.log('la conv', this.conversation);
-    },
     scrollBottom() {
       setTimeout(() => {
         let scrollElement = document.querySelector('#scroll');

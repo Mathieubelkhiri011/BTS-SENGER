@@ -56,7 +56,8 @@
         :key="laconversation.id"
         :class="{
           selected: laconversation.id === conversationIsActive,
-          available: usersAvailable.includes(laconversation.participants[0])
+          available: oneParticipantIsOnline(laconversation.participants),
+          new: messageNeverSeen(laconversation)
         }"
         @click="openConversation(laconversation.id)"
       >
@@ -70,7 +71,11 @@
         <div class="content">
           <div class="metadata">
             <div class="title">
-              <i class="ui small icon circle" v-if="usersAvailable.includes(laconversation.participants[0])"> </i>
+              <i
+                class="ui small icon circle"
+                v-if="oneParticipantIsOnline(laconversation.participants) || messageNeverSeen(laconversation)"
+              >
+              </i>
               {{ laconversation.title }}
             </div>
 
@@ -101,9 +106,6 @@ export default {
   },
   methods: {
     ...mapActions(['deauthenticate'], ['seeConversation']),
-    print() {
-      console.log('conversation: ', this.conversations);
-    },
     openCommunity() {
       router.push({ name: 'Community' });
     },
@@ -116,6 +118,18 @@ export default {
     },
     openGroupeProjet() {
       router.push({ name: 'openGroupeProjet' });
+    },
+    oneParticipantIsOnline(participants) {
+      return this.usersAvailable.some(x => participants.includes(x) && x != this.user.username);
+    },
+    messageNeverSeen(conversation) {
+      console.log('la conv', conversation);
+      console.log('seen msg', conversation.seen[this.user.username].message_id);
+      if (conversation.seen[this.user.username].message_id === conversation.lastMessage.id) {
+        return false;
+      } else {
+        return true;
+      }
     }
   },
   computed: {

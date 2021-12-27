@@ -59,7 +59,7 @@
       </div>
     </div>
   </div>
-  <div v-else class="message " :class="message.from === user.username ? 'mine' : ''" @click="print(message)">
+  <div v-else class="message " :class="message.from === user.username ? 'mine' : ''">
     <div class="bubble bubble-deleted top bottom">
       Message supprimé
     </div>

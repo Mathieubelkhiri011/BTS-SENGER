@@ -44,6 +44,7 @@ export default new Vuex.Store({
           available: state.usersAvailable.includes(conversation.participants.username),
           title: participantToTitle.join(', '),
           lastMessage: {
+            id: conversation.messages[conversation.messages.length - 1].id,
             posted_at:
               conversation.messages.length > 0 ? conversation.messages[conversation.messages.length - 1].posted_at : '',
             content:

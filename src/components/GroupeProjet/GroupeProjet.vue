@@ -14,7 +14,7 @@
     <div id="margin">
       <div class="user">
         <img src="https://source.unsplash.com/1CsfTx0DuLs/100x100" />
-        <span> Quention Lafond <br /><i class="nickname"> La Salope</i></span>
+        <span> Quentin Lafond <br /><i class="nickname"> La Salope</i></span>
       </div>
       <div class="user">
         <img src="https://source.unsplash.com/5f8i3ckEswk/100x100" />

@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="actions">
-      <button class="ui primary big button" @click="print()">
+      <button class="ui primary big button">
         <i class="conversation icon"></i>
         <span v-if="libBtnConversation === ''">
           {{ 'Ouvrir la conversation (' + this.selectedUsers.length + ')' }}
@@ -58,9 +58,6 @@ export default {
       } else {
         this.selectedUsers.push({ username: username });
       }
-    },
-    print() {
-      console.log(this.users);
     },
     openConversation() {
       this.libBtnConversation = 'Ouverture de la conversation en cours (' + this.selectedUsers.length + ')';

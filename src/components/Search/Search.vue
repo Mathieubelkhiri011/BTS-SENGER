@@ -28,8 +28,8 @@
         </div>
         <div class="messages" v-for="message in laconversation.search" :key="message.id">
           <div class="message">
-            <div class="time" v-if="laconversation.lastMessage.posted_at != ''">
-              {{ new Date(laconversation.lastMessage.posted_at).toLocaleTimeString() }}
+            <div class="time">
+              {{ new Date(message.posted_at).toLocaleTimeString() }}
             </div>
             <div class="bubble">
               {{ message.content }}
@@ -57,9 +57,6 @@ export default {
   },
   methods: {
     ...mapActions(['deauthenticate']),
-    print() {
-      console.log('conversation: ', this.conversations);
-    },
     openCommunity() {
       router.push({ name: 'Community' });
     },
@@ -82,8 +79,6 @@ export default {
           m => m.content && m.content.toLowerCase().includes(this.search.toLowerCase())
         )
       }));
-
-      console.log(FilterConversations.map(m => ({ print: m.search })));
 
       return FilterConversations.sort(function(a, b) {
         return new Date(b.lastMessage.posted_at) - new Date(a.lastMessage.posted_at);

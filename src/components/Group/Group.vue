@@ -92,9 +92,7 @@ export default {
       promise.finally(() => {
         console.log('Participant retiré !');
       });
-    },
-
-    print() {}
+    }
   }
 };
 </script>
