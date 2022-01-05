@@ -61,24 +61,22 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
-  name: "Auth",
+  name: 'Auth',
   data() {
     return {
-      endpoint:
-        localStorage.getItem("server") ||
-        "wss://teach-vue-chat-server.glitch.me",
-      username: localStorage.getItem("username") || "",
-      password: ""
+      endpoint: localStorage.getItem('server') || 'wss://teach-vue-chat-server.glitch.me',
+      username: localStorage.getItem('username') || '',
+      password: ''
     };
   },
   computed: {
-    ...mapGetters(["authenticating"])
+    ...mapGetters(['authenticating'])
   },
   methods: {
-    ...mapActions(["authenticate"]),
+    ...mapActions(['authenticate']),
     login() {
       this.authenticate({
         username: this.username,
