@@ -95,7 +95,6 @@ export default new Vuex.Store({
     },
 
     upsertAvailableUsers(state, { usernames }) {
-      console.log({ usernames });
       state.usersAvailable = usernames;
     },
 
@@ -117,10 +116,8 @@ export default new Vuex.Store({
       const localConversationIndex = state.conversations.findIndex(
         _conversation => _conversation.id === conversation_id
       );
-      console.log('TEST', conversation_id, message);
       if (localConversationIndex !== -1) {
         let message_id = message.id;
-        //console.log('upsertMsg tetetetete', message_id);
         const localMessageIndex = state.conversations[localConversationIndex].messages.findIndex(
           _message => _message.id === message_id
         );
@@ -138,9 +135,7 @@ export default new Vuex.Store({
       const localConversationIndex = state.conversations.findIndex(
         _conversation => _conversation.id === conversation_id
       );
-      console.log('TEST', conversation_id, message_id);
       if (localConversationIndex !== -1) {
-        //console.log('upsertMsg tetetetete', message_id);
         const localMessageIndex = state.conversations[localConversationIndex].messages.findIndex(
           _message => _message.id === message_id
         );
@@ -222,7 +217,6 @@ export default new Vuex.Store({
 
     createManyToManyConversation({ commit }, usernames) {
       const promise = Vue.prototype.$client.createManyToManyConversation(usernames);
-      console.log('usernames : ', usernames);
 
       promise.then(({ conversation }) => {
         commit('upsertConversation', {
@@ -295,9 +289,6 @@ export default new Vuex.Store({
       Vue.prototype.$client.deleteMessage(conversation.id, messageId);
     },
     seeConversation({ commit }, { conversationId, messageId }) {
-      // if(!messageId){
-      //   messageId=state.conversations.find(c => c.id === conversationId).lastMessage.
-      // }
       Vue.prototype.$client.seeConversation(conversationId, messageId);
     }
   }

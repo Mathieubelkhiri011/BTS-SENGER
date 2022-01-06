@@ -1,5 +1,5 @@
 <template>
-  <div class="conversation">
+  <div class="conversation" @click="conversationSeen()">
     <div class="conversation-header">
       <img
         v-if="this.conversation.type === 'one_to_one'"
@@ -194,7 +194,6 @@ export default {
       }
     },
     sendMessage() {
-      console.log('message: ', this.message.content);
       let promise;
       if (this.message.replyTo.id !== -1) {
         console.log('message a reply');
@@ -242,13 +241,15 @@ export default {
       this.message.content = '';
     },
     conversationSeen() {
-      let promise = this.seeConversation({
-        conversationId: this.conversation.id,
-        messageId: this.conversation.messages[this.conversation.messages.length - 1].id
-      });
-      promise.finally(() => {
-        console.log('Conversation seen!');
-      });
+      if (this.conversation.seen[this.user.username].message_id !== this.conversation.lastMessage.id) {
+        let promise = this.seeConversation({
+          conversationId: this.conversation.id,
+          messageId: this.conversation.messages[this.conversation.messages.length - 1].id
+        });
+        promise.finally(() => {
+          console.log('Conversation seen!');
+        });
+      }
     }
   },
   watch: {
