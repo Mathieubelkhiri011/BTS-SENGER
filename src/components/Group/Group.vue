@@ -56,7 +56,6 @@ export default {
     ...mapGetters(['users', 'conversation']),
 
     UsersConversations() {
-      console.log('this.conversation.participants : ', this.conversation.participants);
       return this.users.filter(user => this.conversation.participants.find(element => element === user.username));
     },
 

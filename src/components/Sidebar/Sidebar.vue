@@ -105,7 +105,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['deauthenticate'], ['seeConversation']),
+    ...mapActions(['deauthenticate']),
     openCommunity() {
       router.push({ name: 'Community' });
     },
@@ -123,8 +123,6 @@ export default {
       return this.usersAvailable.some(x => participants.includes(x) && x != this.user.username);
     },
     messageNeverSeen(conversation) {
-      console.log('la conv', conversation);
-      console.log('seen msg', conversation.seen[this.user.username].message_id);
       if (conversation.seen[this.user.username].message_id === conversation.lastMessage.id) {
         return false;
       } else {
